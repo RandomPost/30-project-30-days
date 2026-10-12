@@ -1,0 +1,13 @@
+#!/bin/sh
+# Block commits that add secrets. Installed by `secretscan install-hook`.
+# Scans the staged version of each file (what will actually be committed).
+if command -v secretscan >/dev/null 2>&1; then
+  secretscan scan --staged
+else
+  python3 -m secretscan scan --staged
+fi
+status=$?
+if [ $status -ne 0 ]; then
+  echo "secretscan: commit blocked. Fix the findings above (or use --no-verify)." >&2
+fi
+exit $status

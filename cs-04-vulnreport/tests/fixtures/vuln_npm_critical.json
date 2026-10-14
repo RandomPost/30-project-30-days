@@ -1,0 +1,29 @@
+{
+  "id": "GHSA-test-crit-0004",
+  "aliases": [],
+  "summary": "Prototype pollution",
+  "database_specific": {
+    "severity": "CRITICAL"
+  },
+  "affected": [
+    {
+      "package": {
+        "ecosystem": "npm",
+        "name": "lodash"
+      },
+      "ranges": [
+        {
+          "type": "ECOSYSTEM",
+          "events": [
+            {
+              "introduced": "0"
+            },
+            {
+              "fixed": "4.17.21"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

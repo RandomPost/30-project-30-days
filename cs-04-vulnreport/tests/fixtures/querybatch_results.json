@@ -1,0 +1,25 @@
+{
+  "jinja2@2.4.1": [
+    {
+      "id": "GHSA-test-high-0001",
+      "modified": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "GHSA-test-mod-0002",
+      "modified": "2024-01-01T00:00:00Z"
+    }
+  ],
+  "flask@2.0.0": [
+    {
+      "id": "PYSEC-test-0003",
+      "modified": "2024-01-01T00:00:00Z"
+    }
+  ],
+  "lodash@4.17.10": [
+    {
+      "id": "GHSA-test-crit-0004",
+      "modified": "2024-01-01T00:00:00Z"
+    }
+  ],
+  "requests@2.31.0": []
+}

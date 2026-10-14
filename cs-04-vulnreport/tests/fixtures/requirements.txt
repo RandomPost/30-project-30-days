@@ -1,0 +1,7 @@
+# deps
+jinja2==2.4.1
+flask[async]==2.0.0 ; python_version > '3'
+requests==2.31.0 \
+    --hash=sha256:abc
+unpinned>=1.0
+-r other.txt

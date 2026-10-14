@@ -1,0 +1,10 @@
+[[package]]
+name = "flask"
+version = "2.0.0"
+
+[[package]]
+name = "requests"
+version = "2.31.0"
+
+[metadata]
+lock-version = "2.0"

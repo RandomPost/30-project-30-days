@@ -1,0 +1,12 @@
+[project]
+name = "threat-model-checks"
+version = "0.1.0"
+description = "Citation checker for the File Browser STRIDE threat model"
+requires-python = ">=3.10"
+
+[tool.black]
+line-length = 88
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["scripts"]

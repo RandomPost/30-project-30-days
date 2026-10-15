@@ -1,0 +1,58 @@
+cmd/root.go	195	being wound down
+cmd/root.go	197	no security fixes
+cmd/root.go	91	"socketPerm", 0666
+cmd/root.go	217	os.Chmod(server.Socket
+auth/proxy.go	22	r.Header.Get(a.Header)
+http/auth.go	50	X-Auth
+http/auth.go	123	WithExpirationRequired
+http/auth.go	136	d.user, err = d.store.Users.Get
+http/auth.go	22	time.Hour * 2
+http/public.go	20	link, err := d.store.Share.GetByHash
+http/public.go	35	!user.Perm.Share
+files/scoped.go	43	func NewFs
+files/scoped.go	97	EvalSymlinks
+cmd/root.go	112	"disableExec", true
+http/commands.go	88	exec.Command(command[0
+http/settings.go	45	var settingsPutHandler = withAdmin
+http/users.go	22	NonModifiableFieldsForNonAdmin =
+users/password.go	27	bcrypt.DefaultCost
+http/auth.go	156	func loginHandler
+settings/settings.go	15	DefaultMinimumPasswordLength
+users/password.go	18	commonPasswords
+http/public.go	149	X-SHARE-PASSWORD
+auth/json.go	17	dummyHash is used
+auth/proxy.go	24	ErrNotExist
+auth/proxy.go	50	Perm.Execute = false
+cmd/root.go	510	randomly generated password
+cmd/root.go	90	hashed password for the first user
+http/commands.go	80	slices.Contains(d.user.Commands, name)
+runner/commands.go	52	cmd = parts[0
+runner/parser.go	21	command = append(command, raw)
+runner/runner.go	81	return os.Getenv(key)
+runner/runner.go	93	os.Environ()
+auth/hook.go	92	PASSWORD=%s
+storage/bolt/config.go	18	func (s settingsBackend) Save
+cmd/utils.go	26	databasePermissions = 0640
+frontend/src/utils/auth.ts	15	localStorage.setItem
+frontend/src/utils/auth.ts	13	document.cookie
+http/raw.go	67	"inline") == "true"
+http/raw.go	227	script-src 'none'
+http/static.go	88	template.JS
+files/scoped.go	44	if followExternal
+http/public.go	145	ConstantTimeCompare
+share/storage.go	40	link.Expire != 0 && link.Expire <= time.Now().Unix()
+http/public.go	72	files.NewFs(d.user.Fs, basePath
+http/data.go	106	status >= 400
+http/data.go	107	realip.FromRequest
+cmd/root.go	255	ReadHeaderTimeout
+http/tus_handlers.go	134	cache.Register(file.RealPath()
+compose.yaml	12	FB_REDIS_CACHE_URL=redis://default:filebrowser
+compose.yaml	4	filebrowser/filebrowser:latest
+compose.yaml	8	8000:80
+Dockerfile	40	USER user
+http/http.go	35	Content-Security-Policy
+http/auth.go	59	http.MethodGet
+http/auth.go	185	!d.settings.Signup
+http/auth.go	218	Perm.Execute = false
+http/share.go	23	omits the server-side secrets
+http/preview.go	157	func previewCacheKey

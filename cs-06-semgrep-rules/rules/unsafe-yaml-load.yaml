@@ -1,0 +1,29 @@
+rules:
+  - id: unsafe-yaml-load
+    languages: [python]
+    severity: ERROR
+    message: >-
+      yaml.load() / yaml.load_all() without a safe loader, or yaml.unsafe_load(), can
+      construct arbitrary Python objects from untrusted input (code execution). Use
+      yaml.safe_load() / yaml.safe_load_all(), or pass Loader=yaml.SafeLoader.
+    metadata:
+      cwe: "CWE-502: Deserialization of Untrusted Data"
+      category: security
+    patterns:
+      - pattern-either:
+          - pattern: yaml.unsafe_load(...)
+          - pattern: yaml.unsafe_load_all(...)
+          - pattern: yaml.load(...)
+          - pattern: yaml.load_all(...)
+      - pattern-not: yaml.load(..., Loader=yaml.SafeLoader, ...)
+      - pattern-not: yaml.load(..., Loader=SafeLoader, ...)
+      - pattern-not: yaml.load(..., Loader=yaml.CSafeLoader, ...)
+      - pattern-not: yaml.load(..., Loader=CSafeLoader, ...)
+      - pattern-not: yaml.load($S, yaml.SafeLoader)
+      - pattern-not: yaml.load($S, SafeLoader)
+      - pattern-not: yaml.load($S, yaml.CSafeLoader)
+      - pattern-not: yaml.load($S, CSafeLoader)
+      - pattern-not: yaml.load_all(..., Loader=yaml.SafeLoader, ...)
+      - pattern-not: yaml.load_all(..., Loader=SafeLoader, ...)
+      - pattern-not: yaml.load_all($S, yaml.SafeLoader)
+      - pattern-not: yaml.load_all($S, SafeLoader)

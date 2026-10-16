@@ -1,0 +1,22 @@
+rules:
+  - id: flask-sql-string-formatting
+    languages: [python]
+    severity: ERROR
+    message: >-
+      SQL query built with string formatting, concatenation or an f-string.
+      This allows SQL injection. Pass values as bound parameters instead, e.g.
+      cursor.execute("... WHERE id = ?", (uid,)) or SQLAlchemy text() with :params.
+    metadata:
+      cwe: "CWE-89: SQL Injection"
+      category: security
+    patterns:
+      - pattern-either:
+          - pattern: $OBJ.execute($Q % ..., ...)
+          - pattern: $OBJ.execute($Q.format(...), ...)
+          - pattern: $OBJ.execute($Q + ..., ...)
+          - pattern: $OBJ.execute(f"...{...}...", ...)
+          - pattern: $OBJ.executemany($Q % ..., ...)
+          - pattern: $OBJ.executemany(f"...{...}...", ...)
+      - metavariable-regex:
+          metavariable: $OBJ
+          regex: ^(?!log$|logger$|logging$).*

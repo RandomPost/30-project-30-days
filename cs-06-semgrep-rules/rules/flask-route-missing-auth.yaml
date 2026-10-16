@@ -1,0 +1,46 @@
+rules:
+  - id: flask-route-missing-auth
+    languages: [python]
+    severity: WARNING
+    message: >-
+      Flask route without an authentication decorator (login_required, jwt_required,
+      require_auth, ...). If this endpoint is meant to be public, mark it with a
+      @public decorator or add `# nosemgrep: flask-route-missing-auth`; otherwise
+      require authentication.
+    metadata:
+      cwe: "CWE-306: Missing Authentication for Critical Function"
+      category: security
+    patterns:
+      - pattern: |
+          @$APP.$METHOD(...)
+          def $FUNC(...):
+              ...
+      - metavariable-regex:
+          metavariable: $METHOD
+          regex: ^(route|get|post|put|patch|delete)$
+      - pattern-not-inside:
+          patterns:
+            - pattern-either:
+                - pattern: |
+                    @$APP.$METHOD(...)
+                    @$AUTH
+                    def $FUNC(...):
+                        ...
+                - pattern: |
+                    @$APP.$METHOD(...)
+                    @$AUTH(...)
+                    def $FUNC(...):
+                        ...
+                - pattern: |
+                    @$AUTH
+                    @$APP.$METHOD(...)
+                    def $FUNC(...):
+                        ...
+                - pattern: |
+                    @$AUTH(...)
+                    @$APP.$METHOD(...)
+                    def $FUNC(...):
+                        ...
+            - metavariable-regex:
+                metavariable: $AUTH
+                regex: (^|\.)(login_required|fresh_login_required|jwt_required|jwt_optional|verify_jwt_in_request|auth_required|require_auth|requires_auth|require_login|login_user_required|roles_required|roles_accepted|permission_required|token_required|admin_required|public)$

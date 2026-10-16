@@ -1,0 +1,22 @@
+rules:
+  - id: unsafe-pickle-load
+    languages: [python]
+    severity: ERROR
+    message: >-
+      Unpickling (pickle, cPickle, dill, shelve) can execute arbitrary code embedded
+      in the data. Never load pickles from untrusted sources. Use a data-only format
+      such as JSON, or sign and verify the payload before loading it.
+    metadata:
+      cwe: "CWE-502: Deserialization of Untrusted Data"
+      category: security
+    pattern-either:
+      - pattern: pickle.load(...)
+      - pattern: pickle.loads(...)
+      - pattern: pickle.Unpickler(...)
+      - pattern: cPickle.load(...)
+      - pattern: cPickle.loads(...)
+      - pattern: _pickle.load(...)
+      - pattern: _pickle.loads(...)
+      - pattern: dill.load(...)
+      - pattern: dill.loads(...)
+      - pattern: shelve.open(...)

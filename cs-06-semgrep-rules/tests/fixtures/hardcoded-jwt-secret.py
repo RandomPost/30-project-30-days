@@ -12,6 +12,12 @@ app.config["JWT_SECRET_KEY"] = "change-me-please"
 app.config.update(JWT_SECRET_KEY="another-hardcoded-key")
 # ruleid: hardcoded-jwt-secret
 app.config["SECRET_KEY"] = "dev"
+# ruleid: hardcoded-jwt-secret
+app.config["SECRET_KEY_HMAC"] = "secret"
+# ruleid: hardcoded-jwt-secret
+app.secret_key = "F12Zr47j-not-a-real-key"
+# ruleid: hardcoded-jwt-secret
+app.config["JWT_SIGNING_KEY"] = "x"
 
 
 def vulnerable(user, token):
@@ -40,3 +46,9 @@ def safe(user, token):
 app.config["JWT_SECRET_KEY"] = os.environ["JWT_SECRET_KEY"]
 # ok: hardcoded-jwt-secret
 app.config["JSON_SORT_KEYS"] = False
+# ok: hardcoded-jwt-secret
+app.secret_key = os.environ["FLASK_SECRET"]
+# ok: hardcoded-jwt-secret
+app.config["SECRET_KEY_HMAC"] = os.environ["HMAC_KEY"]
+# ok: hardcoded-jwt-secret
+app.config["TIMEOUT_SECONDS"] = "30"

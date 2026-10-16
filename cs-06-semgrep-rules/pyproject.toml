@@ -1,0 +1,14 @@
+[project]
+name = "semgrep-flask-rules"
+version = "0.1.0"
+description = "Custom Semgrep rules for Python/Flask, developed test-first"
+requires-python = ">=3.10"
+
+[project.optional-dependencies]
+dev = ["pytest", "semgrep"]
+
+[tool.black]
+line-length = 88
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

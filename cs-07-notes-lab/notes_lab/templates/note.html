@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block body %}
+<h1>{{ note['title'] }}</h1>
+{# VULN (stored XSS): the body is marked safe, so stored HTML and script run. #}
+<div class="body">{{ note['body']|safe }}</div>
+<form method="post" action="{{ url_for('delete_note', note_id=note['id']) }}">
+  <button type="submit">Delete</button>
+</form>
+{% endblock %}

@@ -17,6 +17,23 @@ rules:
           - pattern: $OBJ.execute(f"...{...}...", ...)
           - pattern: $OBJ.executemany($Q % ..., ...)
           - pattern: $OBJ.executemany(f"...{...}...", ...)
+          # query assembled into a variable first, executed later in the same block
+          - pattern: |
+              $Q = $FMT % ...
+              ...
+              $OBJ.execute($Q, ...)
+          - pattern: |
+              $Q = $FMT.format(...)
+              ...
+              $OBJ.execute($Q, ...)
+          - pattern: |
+              $Q = f"...{...}..."
+              ...
+              $OBJ.execute($Q, ...)
+          - pattern: |
+              $Q = $FMT + ...
+              ...
+              $OBJ.execute($Q, ...)
       - metavariable-regex:
           metavariable: $OBJ
           regex: ^(?!log$|logger$|logging$).*

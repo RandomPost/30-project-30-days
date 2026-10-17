@@ -10,7 +10,7 @@ returned other users' notes.
 **After:** placeholders (`WHERE username = ?`, `LIKE ? ESCAPE '\'`) with `%`, `_` and `\`
 escaped in the search term. Login fetches the row by username and verifies the hash in
 Python, using a dummy hash for unknown users so timing doesn't reveal accounts.
-**Tests:** `test_sqli_login_bypass`, `test_sqli_search_exfiltration`.
+**Tests:** `test_sqli_login_cannot_bypass_password`, `test_sqli_search_cannot_read_other_users_notes`.
 
 ## 2. Stored XSS
 **Before:** `{{ note['body']|safe }}` rendered stored HTML and script.
@@ -24,7 +24,7 @@ still not run inline script. Also `nosniff`, `Referrer-Policy: same-origin`, `no
 **After:** a per-session random token, required on every POST via a `before_request` hook
 (form field or `X-CSRF-Token` header, constant-time compare, 400 otherwise). Session cookie
 is `SameSite=Lax` and `HttpOnly` (and `Secure` when `NOTES_LAB_HTTPS=1`).
-**Tests:** `test_csrf_*`, `test_session_cookie_*`.
+**Tests:** `test_csrf_*`, `test_session_cookie_is_samesite_lax_and_httponly`.
 
 ## 4. IDOR
 **Before:** `/note/<id>` and `/note/<id>/delete` trusted the id alone, so any user could
@@ -43,7 +43,7 @@ minimum password length 8.
 **Before:** `SECRET_KEY = "dev"` let anyone forge session cookies.
 **After:** random `secrets.token_hex(32)` per start, or `NOTES_LAB_SECRET_KEY`.
 Login also calls `session.clear()` to prevent session fixation.
-**Test:** `test_secret_key_is_not_the_default`.
+**Test:** `test_secret_key_is_not_the_hardcoded_dev_value`.
 
 ## Not addressed (lab scope)
 - No rate limiting or lockout on login or registration.

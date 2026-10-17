@@ -14,6 +14,7 @@
 </ul>
 <h2>New note</h2>
 <form method="post" action="{{ url_for('create_note') }}">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
   <input name="title" placeholder="Title">
   <textarea name="body"></textarea>
   <button type="submit">Save</button>

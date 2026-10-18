@@ -9,3 +9,4 @@ One small project per day for 30 days, built with Claude Code.
 - [cs-05-threat-model](cs-05-threat-model/)
 - [cs-06-semgrep-rules](cs-06-semgrep-rules/)
 - [cs-07-notes-lab](cs-07-notes-lab/)
+- [cs-08-minisiem](cs-08-minisiem/)

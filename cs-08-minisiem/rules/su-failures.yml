@@ -1,0 +1,28 @@
+id: su-failures
+title: Repeated failed su attempts
+description: Someone is guessing another account's password with su.
+severity: medium
+tags: [attack.privilege_escalation, attack.t1110]
+detection:
+  selection:
+    action: su
+    outcome: failure
+  condition: selection
+  threshold:
+    group_by: user
+    count: 3
+    window: 5m
+tests:
+  - name: four failed su attempts fire
+    source: auth
+    alerts: 1
+    lines:
+      - 'Oct 18 06:00:00 web01 su[2200]: FAILED SU (to root) www-data on pts/1'
+      - 'Oct 18 06:00:10 web01 su[2201]: FAILED SU (to root) www-data on pts/1'
+      - 'Oct 18 06:00:20 web01 su[2202]: FAILED SU (to root) www-data on pts/1'
+      - 'Oct 18 06:00:30 web01 su[2203]: FAILED SU (to root) www-data on pts/1'
+  - name: one failed su does not fire
+    source: auth
+    alerts: 0
+    lines:
+      - 'Oct 18 06:00:00 web01 su[2200]: FAILED SU (to root) alice on pts/1'

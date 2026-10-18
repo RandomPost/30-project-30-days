@@ -1,0 +1,47 @@
+id: ssh-brute-force
+title: SSH brute force from a single IP
+description: Many failed SSH logins from one address in a short time.
+severity: high
+tags: [attack.credential_access, attack.t1110.001]
+falsepositives: [Misconfigured automation with a stale password]
+detection:
+  selection:
+    action: login
+    outcome: failure
+  condition: selection
+  threshold:
+    group_by: src_ip
+    count: 8
+    window: 5m
+tests:
+  - name: eight failures in a minute fire
+    source: auth
+    alerts: 1
+    lines:
+      - 'Oct 18 01:00:00 web01 sshd[900]: Failed password for root from 203.0.113.50 port 51900 ssh2'
+      - 'Oct 18 01:00:05 web01 sshd[900]: Failed password for root from 203.0.113.50 port 51900 ssh2'
+      - 'Oct 18 01:00:10 web01 sshd[900]: Failed password for root from 203.0.113.50 port 51900 ssh2'
+      - 'Oct 18 01:00:15 web01 sshd[900]: Failed password for root from 203.0.113.50 port 51900 ssh2'
+      - 'Oct 18 01:00:20 web01 sshd[900]: Failed password for root from 203.0.113.50 port 51900 ssh2'
+      - 'Oct 18 01:00:25 web01 sshd[900]: Failed password for root from 203.0.113.50 port 51900 ssh2'
+      - 'Oct 18 01:00:30 web01 sshd[900]: Failed password for root from 203.0.113.50 port 51900 ssh2'
+      - 'Oct 18 01:00:35 web01 sshd[900]: Failed password for root from 203.0.113.50 port 51900 ssh2'
+  - name: three typos do not fire
+    source: auth
+    alerts: 0
+    lines:
+      - 'Oct 18 01:00:00 web01 sshd[900]: Failed password for alice from 10.0.0.7 port 51900 ssh2'
+      - 'Oct 18 01:00:05 web01 sshd[900]: Failed password for alice from 10.0.0.7 port 51900 ssh2'
+      - 'Oct 18 01:00:10 web01 sshd[900]: Failed password for alice from 10.0.0.7 port 51900 ssh2'
+  - name: eight failures spread over 40 minutes do not fire
+    source: auth
+    alerts: 0
+    lines:
+      - 'Oct 18 01:00:00 web01 sshd[900]: Failed password for root from 203.0.113.50 port 51900 ssh2'
+      - 'Oct 18 01:05:00 web01 sshd[900]: Failed password for root from 203.0.113.50 port 51900 ssh2'
+      - 'Oct 18 01:10:00 web01 sshd[900]: Failed password for root from 203.0.113.50 port 51900 ssh2'
+      - 'Oct 18 01:15:00 web01 sshd[900]: Failed password for root from 203.0.113.50 port 51900 ssh2'
+      - 'Oct 18 01:20:00 web01 sshd[900]: Failed password for root from 203.0.113.50 port 51900 ssh2'
+      - 'Oct 18 01:25:00 web01 sshd[900]: Failed password for root from 203.0.113.50 port 51900 ssh2'
+      - 'Oct 18 01:30:00 web01 sshd[900]: Failed password for root from 203.0.113.50 port 51900 ssh2'
+      - 'Oct 18 01:35:00 web01 sshd[900]: Failed password for root from 203.0.113.50 port 51900 ssh2'

@@ -1,0 +1,38 @@
+id: web-sqli
+title: SQL injection attempt in web request
+description: The decoded request path contains common SQL injection payloads.
+severity: high
+tags: [attack.initial_access, attack.t1190]
+detection:
+  selection:
+    http_path|re:
+      - 'union(\s|/\*.*?\*/)+(all(\s|/\*.*?\*/)+)?select'
+      - "'\\s*or\\s*'?1'?\\s*=\\s*'?1"
+      - 'sleep\(\d'
+      - 'information_schema'
+      - 'waitfor\s+delay'
+  condition: selection
+  threshold:
+    group_by: src_ip
+    count: 1
+    window: 10m
+tests:
+  - name: union select fires once for a burst
+    source: nginx
+    alerts: 1
+    lines:
+      - '198.51.100.77 - - [18/Oct/2026:09:00:00 +0000] "GET /products?id=1%27%20UNION%20SELECT%20username,password%20FROM%20users-- HTTP/1.1" 200 512 "-" "Mozilla/5.0 (X11; Linux x86_64)"'
+      - '198.51.100.77 - - [18/Oct/2026:09:00:01 +0000] "GET /products?id=1%27%20UNION%20SELECT%20username,password%20FROM%20users-- HTTP/1.1" 200 512 "-" "Mozilla/5.0 (X11; Linux x86_64)"'
+      - '198.51.100.77 - - [18/Oct/2026:09:00:02 +0000] "GET /products?id=1%27%20UNION%20SELECT%20username,password%20FROM%20users-- HTTP/1.1" 200 512 "-" "Mozilla/5.0 (X11; Linux x86_64)"'
+      - '198.51.100.77 - - [18/Oct/2026:09:00:03 +0000] "GET /products?id=1%27%20UNION%20SELECT%20username,password%20FROM%20users-- HTTP/1.1" 200 512 "-" "Mozilla/5.0 (X11; Linux x86_64)"'
+  - name: classic or 1=1 fires
+    source: nginx
+    alerts: 1
+    lines:
+      - '198.51.100.78 - - [18/Oct/2026:09:10:00 +0000] "GET /login?u=admin%27+OR+%271%27%3D%271 HTTP/1.1" 200 512 "-" "Mozilla/5.0 (X11; Linux x86_64)"'
+  - name: plain product page does not fire
+    source: nginx
+    alerts: 0
+    lines:
+      - '10.0.0.7 - - [18/Oct/2026:09:20:00 +0000] "GET /products?id=12 HTTP/1.1" 200 512 "-" "Mozilla/5.0 (X11; Linux x86_64)"'
+      - '10.0.0.7 - - [18/Oct/2026:09:20:05 +0000] "GET /search?q=union+station HTTP/1.1" 200 512 "-" "Mozilla/5.0 (X11; Linux x86_64)"'

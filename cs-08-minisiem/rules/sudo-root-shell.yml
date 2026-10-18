@@ -1,0 +1,23 @@
+id: sudo-root-shell
+title: Interactive root shell via sudo
+description: sudo used to start a shell instead of a specific command.
+severity: medium
+tags: [attack.privilege_escalation, attack.t1548.003]
+falsepositives: [Admins who routinely run sudo -i or sudo bash]
+detection:
+  selection:
+    action: sudo
+    outcome: success
+    command|re: '^(/usr)?/bin/(ba|da|z|k)?sh(\s|$)'
+  condition: selection
+tests:
+  - name: sudo /bin/bash fires
+    source: auth
+    alerts: 1
+    lines:
+      - 'Oct 18 04:00:00 web01 sudo[2001]:   deploy : TTY=pts/0 ; PWD=/home/deploy ; USER=root ; COMMAND=/bin/bash'
+  - name: sudo apt update does not fire
+    source: auth
+    alerts: 0
+    lines:
+      - 'Oct 18 04:00:00 web01 sudo[2001]:   deploy : TTY=pts/0 ; PWD=/home/deploy ; USER=root ; COMMAND=/usr/bin/apt update'

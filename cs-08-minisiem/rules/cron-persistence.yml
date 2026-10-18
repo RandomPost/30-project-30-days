@@ -1,0 +1,21 @@
+id: cron-persistence
+title: Crontab modified
+description: A user replaced their crontab, a common persistence mechanism.
+severity: medium
+tags: [attack.persistence, attack.t1053.003]
+falsepositives: [Admins editing scheduled jobs]
+detection:
+  selection:
+    action: cron_change
+  condition: selection
+tests:
+  - name: crontab REPLACE fires
+    source: syslog
+    alerts: 1
+    lines:
+      - 'Oct 18 08:00:00 web01 crontab[2400]: (www-data) REPLACE (www-data)'
+  - name: crontab LIST does not fire
+    source: syslog
+    alerts: 0
+    lines:
+      - 'Oct 18 08:00:00 web01 crontab[2401]: (alice) LIST (alice)'

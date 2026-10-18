@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mini SIEM</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <header>
+    <h1>Mini SIEM</h1>
+    <p id="totals" class="muted"></p>
+  </header>
+  <main>
+    <section class="panel">
+      <h2>Alerts by severity</h2>
+      <div id="by-severity"></div>
+    </section>
+    <section class="panel wide">
+      <h2>Alerts over time <span class="muted">(hourly, by first seen)</span></h2>
+      <div id="timeline"></div>
+      <ul id="legend" class="legend"></ul>
+    </section>
+    <section class="panel full">
+      <div class="bar">
+        <h2>Alerts</h2>
+        <label>Severity
+          <select id="sev-filter">
+            <option value="">All</option>
+            <option>critical</option><option>high</option>
+            <option>medium</option><option>low</option>
+          </select>
+        </label>
+      </div>
+      <table id="alerts">
+        <thead>
+          <tr><th>Severity</th><th>Rule</th><th>Source</th><th>First seen</th><th>Events</th></tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+      <p id="empty" class="muted" hidden>No alerts. Run <code>minisiem detect</code>.</p>
+    </section>
+  </main>
+  <script src="/app.js"></script>
+</body>
+</html>

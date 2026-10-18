@@ -1,0 +1,57 @@
+id: web-404-flood
+title: Directory or file enumeration (404 flood)
+description: One address triggers many 404s in a minute, as content discovery does.
+severity: medium
+tags: [attack.reconnaissance, attack.t1595.003]
+detection:
+  selection:
+    http_status: 404
+  condition: selection
+  threshold:
+    group_by: src_ip
+    count: 25
+    window: 1m
+tests:
+  - name: thirty 404s in thirty seconds fire
+    source: nginx
+    alerts: 1
+    lines:
+      - '203.0.113.9 - - [18/Oct/2026:12:00:00 +0000] "GET /admin0.php HTTP/1.1" 404 512 "-" "Mozilla/5.0 (X11; Linux x86_64)"'
+      - '203.0.113.9 - - [18/Oct/2026:12:00:01 +0000] "GET /admin1.php HTTP/1.1" 404 512 "-" "Mozilla/5.0 (X11; Linux x86_64)"'
+      - '203.0.113.9 - - [18/Oct/2026:12:00:02 +0000] "GET /admin2.php HTTP/1.1" 404 512 "-" "Mozilla/5.0 (X11; Linux x86_64)"'
+      - '203.0.113.9 - - [18/Oct/2026:12:00:03 +0000] "GET /admin3.php HTTP/1.1" 404 512 "-" "Mozilla/5.0 (X11; Linux x86_64)"'
+      - '203.0.113.9 - - [18/Oct/2026:12:00:04 +0000] "GET /admin4.php HTTP/1.1" 404 512 "-" "Mozilla/5.0 (X11; Linux x86_64)"'
+      - '203.0.113.9 - - [18/Oct/2026:12:00:05 +0000] "GET /admin5.php HTTP/1.1" 404 512 "-" "Mozilla/5.0 (X11; Linux x86_64)"'
+      - '203.0.113.9 - - [18/Oct/2026:12:00:06 +0000] "GET /admin6.php HTTP/1.1" 404 512 "-" "Mozilla/5.0 (X11; Linux x86_64)"'
+      - '203.0.113.9 - - [18/Oct/2026:12:00:07 +0000] "GET /admin7.php HTTP/1.1" 404 512 "-" "Mozilla/5.0 (X11; Linux x86_64)"'
+      - '203.0.113.9 - - [18/Oct/2026:12:00:08 +0000] "GET /admin8.php HTTP/1.1" 404 512 "-" "Mozilla/5.0 (X11; Linux x86_64)"'
+      - '203.0.113.9 - - [18/Oct/2026:12:00:09 +0000] "GET /admin9.php HTTP/1.1" 404 512 "-" "Mozilla/5.0 (X11; Linux x86_64)"'
+      - '203.0.113.9 - - [18/Oct/2026:12:00:10 +0000] "GET /admin10.php HTTP/1.1" 404 512 "-" "Mozilla/5.0 (X11; Linux x86_64)"'
+      - '203.0.113.9 - - [18/Oct/2026:12:00:11 +0000] "GET /admin11.php HTTP/1.1" 404 512 "-" "Mozilla/5.0 (X11; Linux x86_64)"'
+      - '203.0.113.9 - - [18/Oct/2026:12:00:12 +0000] "GET /admin12.php HTTP/1.1" 404 512 "-" "Mozilla/5.0 (X11; Linux x86_64)"'
+      - '203.0.113.9 - - [18/Oct/2026:12:00:13 +0000] "GET /admin13.php HTTP/1.1" 404 512 "-" "Mozilla/5.0 (X11; Linux x86_64)"'
+      - '203.0.113.9 - - [18/Oct/2026:12:00:14 +0000] "GET /admin14.php HTTP/1.1" 404 512 "-" "Mozilla/5.0 (X11; Linux x86_64)"'
+      - '203.0.113.9 - - [18/Oct/2026:12:00:15 +0000] "GET /admin15.php HTTP/1.1" 404 512 "-" "Mozilla/5.0 (X11; Linux x86_64)"'
+      - '203.0.113.9 - - [18/Oct/2026:12:00:16 +0000] "GET /admin16.php HTTP/1.1" 404 512 "-" "Mozilla/5.0 (X11; Linux x86_64)"'
+      - '203.0.113.9 - - [18/Oct/2026:12:00:17 +0000] "GET /admin17.php HTTP/1.1" 404 512 "-" "Mozilla/5.0 (X11; Linux x86_64)"'
+      - '203.0.113.9 - - [18/Oct/2026:12:00:18 +0000] "GET /admin18.php HTTP/1.1" 404 512 "-" "Mozilla/5.0 (X11; Linux x86_64)"'
+      - '203.0.113.9 - - [18/Oct/2026:12:00:19 +0000] "GET /admin19.php HTTP/1.1" 404 512 "-" "Mozilla/5.0 (X11; Linux x86_64)"'
+      - '203.0.113.9 - - [18/Oct/2026:12:00:20 +0000] "GET /admin20.php HTTP/1.1" 404 512 "-" "Mozilla/5.0 (X11; Linux x86_64)"'
+      - '203.0.113.9 - - [18/Oct/2026:12:00:21 +0000] "GET /admin21.php HTTP/1.1" 404 512 "-" "Mozilla/5.0 (X11; Linux x86_64)"'
+      - '203.0.113.9 - - [18/Oct/2026:12:00:22 +0000] "GET /admin22.php HTTP/1.1" 404 512 "-" "Mozilla/5.0 (X11; Linux x86_64)"'
+      - '203.0.113.9 - - [18/Oct/2026:12:00:23 +0000] "GET /admin23.php HTTP/1.1" 404 512 "-" "Mozilla/5.0 (X11; Linux x86_64)"'
+      - '203.0.113.9 - - [18/Oct/2026:12:00:24 +0000] "GET /admin24.php HTTP/1.1" 404 512 "-" "Mozilla/5.0 (X11; Linux x86_64)"'
+      - '203.0.113.9 - - [18/Oct/2026:12:00:25 +0000] "GET /admin25.php HTTP/1.1" 404 512 "-" "Mozilla/5.0 (X11; Linux x86_64)"'
+      - '203.0.113.9 - - [18/Oct/2026:12:00:26 +0000] "GET /admin26.php HTTP/1.1" 404 512 "-" "Mozilla/5.0 (X11; Linux x86_64)"'
+      - '203.0.113.9 - - [18/Oct/2026:12:00:27 +0000] "GET /admin27.php HTTP/1.1" 404 512 "-" "Mozilla/5.0 (X11; Linux x86_64)"'
+      - '203.0.113.9 - - [18/Oct/2026:12:00:28 +0000] "GET /admin28.php HTTP/1.1" 404 512 "-" "Mozilla/5.0 (X11; Linux x86_64)"'
+      - '203.0.113.9 - - [18/Oct/2026:12:00:29 +0000] "GET /admin29.php HTTP/1.1" 404 512 "-" "Mozilla/5.0 (X11; Linux x86_64)"'
+  - name: a few 404s do not fire
+    source: nginx
+    alerts: 0
+    lines:
+      - '10.0.0.7 - - [18/Oct/2026:12:00:00 +0000] "GET /old0 HTTP/1.1" 404 512 "-" "Mozilla/5.0 (X11; Linux x86_64)"'
+      - '10.0.0.7 - - [18/Oct/2026:12:00:10 +0000] "GET /old1 HTTP/1.1" 404 512 "-" "Mozilla/5.0 (X11; Linux x86_64)"'
+      - '10.0.0.7 - - [18/Oct/2026:12:00:20 +0000] "GET /old2 HTTP/1.1" 404 512 "-" "Mozilla/5.0 (X11; Linux x86_64)"'
+      - '10.0.0.7 - - [18/Oct/2026:12:00:30 +0000] "GET /old3 HTTP/1.1" 404 512 "-" "Mozilla/5.0 (X11; Linux x86_64)"'
+      - '10.0.0.7 - - [18/Oct/2026:12:00:40 +0000] "GET /old4 HTTP/1.1" 404 512 "-" "Mozilla/5.0 (X11; Linux x86_64)"'

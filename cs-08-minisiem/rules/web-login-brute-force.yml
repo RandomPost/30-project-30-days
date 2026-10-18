@@ -1,0 +1,60 @@
+id: web-login-brute-force
+title: Web login brute force
+description: Many rejected POSTs to a login endpoint from one address.
+severity: high
+tags: [attack.credential_access, attack.t1110.001]
+detection:
+  selection:
+    http_method: POST
+    http_status: [401, 403]
+    http_path|re: '^/(wp-login\.php|login|admin/login|xmlrpc\.php|user/login)'
+  condition: selection
+  threshold:
+    group_by: src_ip
+    count: 10
+    window: 5m
+tests:
+  - name: fifteen rejected logins fire
+    source: nginx
+    alerts: 1
+    lines:
+      - '203.0.113.200 - - [18/Oct/2026:13:00:00 +0000] "POST /wp-login.php HTTP/1.1" 403 512 "-" "Mozilla/5.0 (X11; Linux x86_64)"'
+      - '203.0.113.200 - - [18/Oct/2026:13:00:03 +0000] "POST /wp-login.php HTTP/1.1" 403 512 "-" "Mozilla/5.0 (X11; Linux x86_64)"'
+      - '203.0.113.200 - - [18/Oct/2026:13:00:06 +0000] "POST /wp-login.php HTTP/1.1" 403 512 "-" "Mozilla/5.0 (X11; Linux x86_64)"'
+      - '203.0.113.200 - - [18/Oct/2026:13:00:09 +0000] "POST /wp-login.php HTTP/1.1" 403 512 "-" "Mozilla/5.0 (X11; Linux x86_64)"'
+      - '203.0.113.200 - - [18/Oct/2026:13:00:12 +0000] "POST /wp-login.php HTTP/1.1" 403 512 "-" "Mozilla/5.0 (X11; Linux x86_64)"'
+      - '203.0.113.200 - - [18/Oct/2026:13:00:15 +0000] "POST /wp-login.php HTTP/1.1" 403 512 "-" "Mozilla/5.0 (X11; Linux x86_64)"'
+      - '203.0.113.200 - - [18/Oct/2026:13:00:18 +0000] "POST /wp-login.php HTTP/1.1" 403 512 "-" "Mozilla/5.0 (X11; Linux x86_64)"'
+      - '203.0.113.200 - - [18/Oct/2026:13:00:21 +0000] "POST /wp-login.php HTTP/1.1" 403 512 "-" "Mozilla/5.0 (X11; Linux x86_64)"'
+      - '203.0.113.200 - - [18/Oct/2026:13:00:24 +0000] "POST /wp-login.php HTTP/1.1" 403 512 "-" "Mozilla/5.0 (X11; Linux x86_64)"'
+      - '203.0.113.200 - - [18/Oct/2026:13:00:27 +0000] "POST /wp-login.php HTTP/1.1" 403 512 "-" "Mozilla/5.0 (X11; Linux x86_64)"'
+      - '203.0.113.200 - - [18/Oct/2026:13:00:30 +0000] "POST /wp-login.php HTTP/1.1" 403 512 "-" "Mozilla/5.0 (X11; Linux x86_64)"'
+      - '203.0.113.200 - - [18/Oct/2026:13:00:33 +0000] "POST /wp-login.php HTTP/1.1" 403 512 "-" "Mozilla/5.0 (X11; Linux x86_64)"'
+      - '203.0.113.200 - - [18/Oct/2026:13:00:36 +0000] "POST /wp-login.php HTTP/1.1" 403 512 "-" "Mozilla/5.0 (X11; Linux x86_64)"'
+      - '203.0.113.200 - - [18/Oct/2026:13:00:39 +0000] "POST /wp-login.php HTTP/1.1" 403 512 "-" "Mozilla/5.0 (X11; Linux x86_64)"'
+      - '203.0.113.200 - - [18/Oct/2026:13:00:42 +0000] "POST /wp-login.php HTTP/1.1" 403 512 "-" "Mozilla/5.0 (X11; Linux x86_64)"'
+  - name: two rejected logins do not fire
+    source: nginx
+    alerts: 0
+    lines:
+      - '10.0.0.7 - - [18/Oct/2026:13:00:00 +0000] "POST /login HTTP/1.1" 401 512 "-" "Mozilla/5.0 (X11; Linux x86_64)"'
+      - '10.0.0.7 - - [18/Oct/2026:13:00:20 +0000] "POST /login HTTP/1.1" 401 512 "-" "Mozilla/5.0 (X11; Linux x86_64)"'
+  - name: successful logins do not fire
+    source: nginx
+    alerts: 0
+    lines:
+      - '10.0.0.8 - - [18/Oct/2026:13:00:00 +0000] "POST /login HTTP/1.1" 302 512 "-" "Mozilla/5.0 (X11; Linux x86_64)"'
+      - '10.0.0.8 - - [18/Oct/2026:13:00:03 +0000] "POST /login HTTP/1.1" 302 512 "-" "Mozilla/5.0 (X11; Linux x86_64)"'
+      - '10.0.0.8 - - [18/Oct/2026:13:00:06 +0000] "POST /login HTTP/1.1" 302 512 "-" "Mozilla/5.0 (X11; Linux x86_64)"'
+      - '10.0.0.8 - - [18/Oct/2026:13:00:09 +0000] "POST /login HTTP/1.1" 302 512 "-" "Mozilla/5.0 (X11; Linux x86_64)"'
+      - '10.0.0.8 - - [18/Oct/2026:13:00:12 +0000] "POST /login HTTP/1.1" 302 512 "-" "Mozilla/5.0 (X11; Linux x86_64)"'
+      - '10.0.0.8 - - [18/Oct/2026:13:00:15 +0000] "POST /login HTTP/1.1" 302 512 "-" "Mozilla/5.0 (X11; Linux x86_64)"'
+      - '10.0.0.8 - - [18/Oct/2026:13:00:18 +0000] "POST /login HTTP/1.1" 302 512 "-" "Mozilla/5.0 (X11; Linux x86_64)"'
+      - '10.0.0.8 - - [18/Oct/2026:13:00:21 +0000] "POST /login HTTP/1.1" 302 512 "-" "Mozilla/5.0 (X11; Linux x86_64)"'
+      - '10.0.0.8 - - [18/Oct/2026:13:00:24 +0000] "POST /login HTTP/1.1" 302 512 "-" "Mozilla/5.0 (X11; Linux x86_64)"'
+      - '10.0.0.8 - - [18/Oct/2026:13:00:27 +0000] "POST /login HTTP/1.1" 302 512 "-" "Mozilla/5.0 (X11; Linux x86_64)"'
+      - '10.0.0.8 - - [18/Oct/2026:13:00:30 +0000] "POST /login HTTP/1.1" 302 512 "-" "Mozilla/5.0 (X11; Linux x86_64)"'
+      - '10.0.0.8 - - [18/Oct/2026:13:00:33 +0000] "POST /login HTTP/1.1" 302 512 "-" "Mozilla/5.0 (X11; Linux x86_64)"'
+      - '10.0.0.8 - - [18/Oct/2026:13:00:36 +0000] "POST /login HTTP/1.1" 302 512 "-" "Mozilla/5.0 (X11; Linux x86_64)"'
+      - '10.0.0.8 - - [18/Oct/2026:13:00:39 +0000] "POST /login HTTP/1.1" 302 512 "-" "Mozilla/5.0 (X11; Linux x86_64)"'
+      - '10.0.0.8 - - [18/Oct/2026:13:00:42 +0000] "POST /login HTTP/1.1" 302 512 "-" "Mozilla/5.0 (X11; Linux x86_64)"'

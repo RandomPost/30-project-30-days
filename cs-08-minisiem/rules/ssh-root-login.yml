@@ -1,0 +1,28 @@
+id: ssh-root-login
+title: Successful SSH login as root
+description: Direct root logins over SSH bypass per-user accountability.
+severity: medium
+tags: [attack.initial_access, attack.t1078]
+falsepositives: [Break-glass access, config management that logs in as root]
+detection:
+  selection:
+    action: login
+    outcome: success
+    user: root
+  condition: selection
+tests:
+  - name: accepted root login fires
+    source: auth
+    alerts: 1
+    lines:
+      - 'Oct 18 03:00:00 web01 sshd[1001]: Accepted password for root from 192.0.2.77 port 40022 ssh2'
+  - name: accepted login for a normal user does not fire
+    source: auth
+    alerts: 0
+    lines:
+      - 'Oct 18 03:00:00 web01 sshd[1001]: Accepted publickey for alice from 10.0.0.7 port 40022 ssh2'
+  - name: failed root login does not fire
+    source: auth
+    alerts: 0
+    lines:
+      - 'Oct 18 03:00:00 web01 sshd[900]: Failed password for root from 192.0.2.77 port 51900 ssh2'

@@ -1,0 +1,21 @@
+id: user-created
+title: New local user account created
+description: useradd ran. Attackers add accounts for persistence.
+severity: high
+tags: [attack.persistence, attack.t1136.001]
+falsepositives: [Planned onboarding or provisioning]
+detection:
+  selection:
+    action: user_created
+  condition: selection
+tests:
+  - name: useradd fires
+    source: auth
+    alerts: 1
+    lines:
+      - 'Oct 18 07:00:00 web01 useradd[2300]: new user: name=support, UID=1002, GID=1002, home=/home/support, shell=/bin/bash'
+  - name: cron job does not fire
+    source: syslog
+    alerts: 0
+    lines:
+      - 'Oct 18 07:00:00 web01 CRON[2301]: (root) CMD (/usr/local/bin/backup.sh)'

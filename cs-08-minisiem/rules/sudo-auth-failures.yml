@@ -1,0 +1,27 @@
+id: sudo-auth-failures
+title: Repeated sudo authentication failures
+description: A user keeps failing the sudo password prompt.
+severity: medium
+tags: [attack.privilege_escalation, attack.t1110]
+detection:
+  selection:
+    action: sudo
+    outcome: failure
+  condition: selection
+  threshold:
+    group_by: user
+    count: 3
+    window: 10m
+tests:
+  - name: three failed sudo attempts fire
+    source: auth
+    alerts: 1
+    lines:
+      - 'Oct 18 05:00:00 web01 sudo[2100]:   deploy : 3 incorrect password attempts ; TTY=pts/0 ; PWD=/home/deploy ; USER=root ; COMMAND=/bin/bash'
+      - 'Oct 18 05:01:00 web01 sudo[2101]:   deploy : 3 incorrect password attempts ; TTY=pts/0 ; PWD=/home/deploy ; USER=root ; COMMAND=/bin/bash'
+      - 'Oct 18 05:02:00 web01 sudo[2102]:   deploy : 3 incorrect password attempts ; TTY=pts/0 ; PWD=/home/deploy ; USER=root ; COMMAND=/bin/bash'
+  - name: one failed attempt does not fire
+    source: auth
+    alerts: 0
+    lines:
+      - 'Oct 18 05:00:00 web01 sudo[2100]:   alice : 1 incorrect password attempt ; TTY=pts/0 ; PWD=/home/alice ; USER=root ; COMMAND=/bin/ls'

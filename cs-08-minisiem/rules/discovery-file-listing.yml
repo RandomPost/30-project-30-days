@@ -1,0 +1,29 @@
+id: discovery-file-listing
+title: Repeated file and directory enumeration
+description: >-
+  An audited remote shell command matches a repeated file and directory enumeration pattern. Individually benign;
+  worth reviewing when it follows a suspicious login. Needs the cmdaudit ForceCommand telemetry.
+severity: low
+tags: [attack.discovery, attack.t1083]
+falsepositives: [Admins and automation running inventory commands]
+detection:
+  selection:
+    action: command
+    command|re: '^(ls|find|tree|locate)(\s|$)'
+  condition: selection
+  threshold:
+    group_by: user
+    count: 2
+    window: 10m
+tests:
+  - name: matching commands fire once
+    source: auth
+    alerts: 1
+    lines:
+      - 'Oct 20 12:00:01 victim cmdaudit[901]: user=labuser src=10.77.0.50 cmd=ls -la /etc'
+      - 'Oct 20 12:00:02 victim cmdaudit[902]: user=labuser src=10.77.0.50 cmd=find /home -maxdepth 2'
+  - name: unrelated command does not fire
+    source: auth
+    alerts: 0
+    lines:
+      - 'Oct 20 12:00:01 victim cmdaudit[901]: user=labuser src=10.77.0.50 cmd=ls -la /etc'

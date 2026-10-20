@@ -44,6 +44,7 @@ SU_OK = re.compile(r"Successful su for (?P<target>\S+) by (?P<user>\S+)")
 USERADD = re.compile(r"new user: name=(?P<user>[^,\s]+)")
 CRONTAB = re.compile(r"\((?P<user>[^)]+)\) (?P<verb>REPLACE|DELETE)\b")
 CRON_CMD = re.compile(r"\((?P<user>[^)]+)\) CMD ")
+CMDAUDIT = re.compile(r"user=(?P<user>\S+) src=(?P<ip>\S+) cmd=(?P<cmd>.*)$")
 
 _UTC = timezone.utc
 
@@ -123,6 +124,16 @@ def _classify(ev: dict, prog: str, msg: str) -> None:
         if m:
             ev.update(action="cron_change", outcome="success", user=m["user"])
             return
+    elif prog == "cmdaudit":
+        m = CMDAUDIT.search(msg)
+        if m:
+            ev.update(
+                action="command",
+                outcome="success",
+                user=m["user"],
+                src_ip=m["ip"],
+                command=m["cmd"].strip(),
+            )
     elif prog in ("CRON", "cron"):
         m = CRON_CMD.search(msg)
         if m:

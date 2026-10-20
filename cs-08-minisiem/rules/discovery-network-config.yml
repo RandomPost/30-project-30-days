@@ -1,0 +1,29 @@
+id: discovery-network-config
+title: Network configuration discovery
+description: >-
+  An audited remote shell command matches a network configuration discovery pattern. Individually benign;
+  worth reviewing when it follows a suspicious login. Needs the cmdaudit ForceCommand telemetry.
+severity: low
+tags: [attack.discovery, attack.t1016]
+falsepositives: [Admins and automation running inventory commands]
+detection:
+  selection:
+    action: command
+    command|re: '^(ip\s+(a|addr|address|r|route|link)|ifconfig|netstat|ss|route)(\s|$)|^cat\s+/etc/resolv\.conf'
+  condition: selection
+  threshold:
+    group_by: user
+    count: 1
+    window: 10m
+tests:
+  - name: matching commands fire once
+    source: auth
+    alerts: 1
+    lines:
+      - 'Oct 20 12:00:01 victim cmdaudit[901]: user=labuser src=10.77.0.50 cmd=ip addr'
+      - 'Oct 20 12:00:02 victim cmdaudit[902]: user=labuser src=10.77.0.50 cmd=cat /etc/resolv.conf'
+  - name: unrelated command does not fire
+    source: auth
+    alerts: 0
+    lines:
+      - 'Oct 20 12:00:01 victim cmdaudit[901]: user=labuser src=10.77.0.50 cmd=ip help'

@@ -1,0 +1,9 @@
+*
+!cs-08-minisiem
+!cs-10-purple-lab
+**/__pycache__
+**/*.egg-info
+**/.venv
+**/.pytest_cache
+cs-10-purple-lab/lab
+cs-10-purple-lab/reports

@@ -1,0 +1,105 @@
+# Purple-team lab (LAB ONLY). Run via ./run-lab.sh, or directly: docker compose up -d --build
+#
+# Services : target (nginx), victim (weak ssh host), siem (CS-08 minisiem), runner (profile "attack").
+# Network  : labnet, internal (no egress, nothing published to the host), 10.77.0.0/24.
+# Volumes  : logs -> /logs in every container (auth.log, syslog, nginx-access.log, emulation.jsonl)
+#            siemdata -> /data in siem (siem.db)
+#            ./reports (bind mount) -> /reports in siem: coverage reports land in lab/reports/ on the host.
+# Rules    : ../cs-08-minisiem/rules bind-mounted read-only at /rules in siem.
+# Build    : siem/runner use the repo root as build context (they pip install ./cs-08-minisiem and ./cs-10-purple-lab).
+#            Variables (all optional): UBUNTU_IMAGE PYTHON_IMAGE NGINX_IMAGE (e.g. mirror.gcr.io/library/...),
+#            APT_PROXY, HTTPS_PROXY, LAB_CA (path to CA bundle for the build secret), BUILD_NETWORK (e.g. host).
+name: purplelab
+
+x-build-extra: &build-extra
+  network: ${BUILD_NETWORK:-default}
+  secrets: [ca]
+
+services:
+  target:
+    build:
+      context: ./target
+      args: { NGINX_IMAGE: "${NGINX_IMAGE:-nginx:alpine}" }
+      <<: *build-extra
+    image: purplelab-target
+    container_name: lab-target
+    hostname: target
+    volumes: [logs:/logs]
+    networks: { labnet: { ipv4_address: 10.77.0.10 } }
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O /dev/null http://127.0.0.1/healthz || exit 1"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  victim:
+    build:
+      context: ./victim
+      args:
+        UBUNTU_IMAGE: "${UBUNTU_IMAGE:-ubuntu:24.04}"
+        APT_PROXY: "${APT_PROXY:-}"
+      <<: *build-extra
+    image: purplelab-victim
+    container_name: lab-victim
+    hostname: victim
+    volumes: [logs:/logs]
+    networks: { labnet: { ipv4_address: 10.77.0.20 } }
+    healthcheck:
+      test: ["CMD-SHELL", "ss -ltn | grep -q ':22 '"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  siem:
+    build:
+      context: ../..
+      dockerfile: cs-10-purple-lab/lab/siem/Dockerfile
+      args:
+        PYTHON_IMAGE: "${PYTHON_IMAGE:-python:3.13-slim}"
+        HTTPS_PROXY: "${HTTPS_PROXY:-}"
+      <<: *build-extra
+    image: purplelab-siem
+    container_name: lab-siem
+    hostname: siem
+    volumes:
+      - logs:/logs
+      - siemdata:/data
+      - ../../cs-08-minisiem/rules:/rules:ro
+      - ./reports:/reports
+    networks: { labnet: { ipv4_address: 10.77.0.30 } }
+    depends_on: { victim: { condition: service_healthy }, target: { condition: service_healthy } }
+    healthcheck:
+      test: ["CMD-SHELL", "test -f /data/siem.db"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  runner:
+    profiles: ["attack"]
+    build:
+      context: ../..
+      dockerfile: cs-10-purple-lab/lab/runner/Dockerfile
+      args:
+        PYTHON_IMAGE: "${PYTHON_IMAGE:-python:3.13-slim}"
+        HTTPS_PROXY: "${HTTPS_PROXY:-}"
+      <<: *build-extra
+    image: purplelab-runner
+    container_name: lab-runner
+    hostname: runner
+    volumes: [logs:/logs]
+    networks: { labnet: { ipv4_address: 10.77.0.50 } }
+    depends_on: { victim: { condition: service_healthy }, target: { condition: service_healthy } }
+
+networks:
+  labnet:
+    internal: true
+    ipam:
+      config: [{ subnet: 10.77.0.0/24 }]
+
+volumes:
+  logs:
+  siemdata:
+
+secrets:
+  ca:
+    file: ${LAB_CA:-/dev/null}

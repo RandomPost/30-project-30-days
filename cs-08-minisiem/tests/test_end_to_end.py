@@ -34,6 +34,17 @@ EXPECTED_RULES = {
     "web-scanner-user-agent",
     "web-sqli",
 }
+# Rules for cmdaudit telemetry, which the sample generator does not emit; their
+# embedded rule tests (`minisiem test-rules`) cover them.
+CMDAUDIT_RULES = {
+    "discovery-file-listing",
+    "discovery-local-accounts",
+    "discovery-network-config",
+    "discovery-process-list",
+    "discovery-system-info",
+    "discovery-whoami",
+}
+ALL_RULES = EXPECTED_RULES | CMDAUDIT_RULES
 
 
 def fired(conn):
@@ -54,7 +65,7 @@ def test_all_rules_fire_on_generated_attack_logs(conn, rules_dir, tmp_path):
     load_logs(conn, None, True, tmp_path)
     rules = load_rules(rules_dir)
     run_rules(conn, rules)
-    assert len(rules) >= 8 and {r.id for r in rules} == EXPECTED_RULES
+    assert len(rules) >= 8 and {r.id for r in rules} == ALL_RULES
     assert fired(conn) == EXPECTED_RULES
 
 
@@ -93,7 +104,7 @@ def test_cli_end_to_end(tmp_path, capsys):
     )
     assert main(["detect", "--db", db]) == 0
     out = capsys.readouterr().out
-    assert f"{len(EXPECTED_RULES)} rules run" in out and " new alerts" in out
+    assert f"{len(ALL_RULES)} rules run" in out and " new alerts" in out
     assert main(["alerts", "--db", db, "--severity", "critical"]) == 0
     assert "web-rce-probe" in capsys.readouterr().out
     assert main(["validate"]) == 0 and main(["test-rules"]) == 0

@@ -1,0 +1,29 @@
+id: discovery-local-accounts
+title: Local account discovery
+description: >-
+  An audited remote shell command matches a local account discovery pattern. Individually benign;
+  worth reviewing when it follows a suspicious login. Needs the cmdaudit ForceCommand telemetry.
+severity: low
+tags: [attack.discovery, attack.t1087.001]
+falsepositives: [Admins and automation running inventory commands]
+detection:
+  selection:
+    action: command
+    command|re: '^(cat\s+/etc/(passwd|group)|getent\s+(passwd|group)|lastlog)(\s|$)'
+  condition: selection
+  threshold:
+    group_by: user
+    count: 1
+    window: 10m
+tests:
+  - name: matching commands fire once
+    source: auth
+    alerts: 1
+    lines:
+      - 'Oct 20 12:00:01 victim cmdaudit[901]: user=labuser src=10.77.0.50 cmd=cat /etc/passwd'
+      - 'Oct 20 12:00:02 victim cmdaudit[902]: user=labuser src=10.77.0.50 cmd=getent passwd'
+  - name: unrelated command does not fire
+    source: auth
+    alerts: 0
+    lines:
+      - 'Oct 20 12:00:01 victim cmdaudit[901]: user=labuser src=10.77.0.50 cmd=cat /etc/hostname'

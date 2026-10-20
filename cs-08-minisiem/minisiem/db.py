@@ -17,9 +17,9 @@ EVENT_FIELDS: dict[str, str] = {
     "src_ip": "client or remote IP address",
     "user": "account involved (login name, sudo caller, HTTP basic-auth user)",
     "action": "login | invalid_user | sudo | su | user_created | cron_change | "
-    "cron_exec | http_request | other",
+    "cron_exec | command | http_request | other",
     "outcome": "success | failure | NULL when not applicable",
-    "command": "command run through sudo",
+    "command": "command run through sudo, or audited remote shell command",
     "http_method": "GET, POST, ...",
     "http_path": "request path and query, URL-decoded",
     "http_status": "HTTP status code (integer)",

@@ -111,3 +111,15 @@ def test_nginx_dash_user_is_null_and_success_outcome():
 def test_decode_path_handles_double_encoding_and_plus():
     assert decode_path("/d?f=%252e%252e%252fx") == "/d?f=../x"
     assert decode_path("/s?q=a+b") == "/s?q=a b"
+
+
+def test_cmdaudit_line_becomes_command_event():
+    line = (
+        "Oct 20 12:00:01 victim cmdaudit[901]: "
+        "user=labuser src=10.77.0.50 cmd=cat /etc/passwd"
+    )
+    ev = parse_syslog_line(line, "auth", 2026)
+    assert ev["action"] == "command"
+    assert ev["user"] == "labuser"
+    assert ev["src_ip"] == "10.77.0.50"
+    assert ev["command"] == "cat /etc/passwd"

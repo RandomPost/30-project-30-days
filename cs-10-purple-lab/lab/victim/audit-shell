@@ -1,0 +1,10 @@
+#!/bin/bash
+# LAB ONLY: sshd ForceCommand. Logs the command with the cmdaudit tag, then runs it.
+src="${SSH_CLIENT%% *}"
+cmd="${SSH_ORIGINAL_COMMAND:-<interactive>}"
+cmd="${cmd//$'\n'/ }"
+logger -i -p auth.info -t cmdaudit "user=${USER:-$(id -un)} src=${src:-unknown} cmd=${cmd}"
+if [ -z "${SSH_ORIGINAL_COMMAND:-}" ]; then
+    exec bash -l
+fi
+exec bash -c "$SSH_ORIGINAL_COMMAND"

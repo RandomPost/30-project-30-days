@@ -98,3 +98,9 @@ that grows (`event_count`, `last_ts`) instead of re-alerting each run.
 - Syslog lines carry no year (pass `--year`) and are read as UTC. Logs are read from files, not live sockets.
 - Rules scan the whole events table each run: fine for a lab, not for millions of rows.
 - The sample attack data is synthetic. Parsers follow OpenSSH/sudo/nginx formats but were not run against production logs.
+
+## Command audit telemetry
+
+Lines from a `cmdaudit` syslog program (`user=U src=IP cmd=...`) parse into `command` events,
+which six `discovery-*` rules (ATT&CK T1082, T1033, T1083, T1057, T1016, T1087.001) match.
+Added in CS-10, where a lab host emits them via an sshd `ForceCommand`.

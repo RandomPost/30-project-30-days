@@ -1,0 +1,11 @@
+# LAB ONLY: deliberately weak sshd config for the purple-team lab. Never use outside labnet.
+Port 22
+PasswordAuthentication yes
+PermitRootLogin yes
+KbdInteractiveAuthentication no
+UsePAM yes
+PrintMotd no
+SyslogFacility AUTH
+LogLevel INFO
+# Every remote command is audited via syslog (tag cmdaudit) then executed.
+ForceCommand /usr/local/bin/audit-shell

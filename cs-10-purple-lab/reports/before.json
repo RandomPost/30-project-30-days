@@ -1,0 +1,234 @@
+{
+  "run_id": "20261020T122543Z",
+  "summary": {
+    "detected": 7,
+    "missed": 7,
+    "not_run": 0,
+    "total": 14,
+    "percent": 50.0
+  },
+  "techniques": [
+    {
+      "id": "T1595.002",
+      "name": "Active Scanning: Vulnerability Scanning",
+      "tactic": "reconnaissance",
+      "status": "detected",
+      "detected_by": [
+        "web-scanner-user-agent"
+      ],
+      "reason": "",
+      "run_id": "20261020T122543Z",
+      "start": "2026-10-20T12:25:43Z",
+      "end": "2026-10-20T12:25:43Z"
+    },
+    {
+      "id": "T1595.003",
+      "name": "Active Scanning: Wordlist Scanning",
+      "tactic": "reconnaissance",
+      "status": "detected",
+      "detected_by": [
+        "web-404-flood"
+      ],
+      "reason": "",
+      "run_id": "20261020T122543Z",
+      "start": "2026-10-20T12:25:45Z",
+      "end": "2026-10-20T12:25:45Z"
+    },
+    {
+      "id": "T1190",
+      "name": "Exploit Public-Facing Application",
+      "tactic": "initial-access",
+      "status": "detected",
+      "detected_by": [
+        "web-path-traversal",
+        "web-rce-probe",
+        "web-sqli"
+      ],
+      "reason": "",
+      "run_id": "20261020T122543Z",
+      "start": "2026-10-20T12:25:46Z",
+      "end": "2026-10-20T12:25:46Z"
+    },
+    {
+      "id": "T1110.001",
+      "name": "Brute Force: Password Guessing",
+      "tactic": "credential-access",
+      "status": "detected",
+      "detected_by": [
+        "ssh-brute-force"
+      ],
+      "reason": "",
+      "run_id": "20261020T122543Z",
+      "start": "2026-10-20T12:25:48Z",
+      "end": "2026-10-20T12:26:10Z"
+    },
+    {
+      "id": "T1110.003",
+      "name": "Brute Force: Password Spraying",
+      "tactic": "credential-access",
+      "status": "detected",
+      "detected_by": [
+        "ssh-password-spraying"
+      ],
+      "reason": "",
+      "run_id": "20261020T122543Z",
+      "start": "2026-10-20T12:26:12Z",
+      "end": "2026-10-20T12:26:31Z"
+    },
+    {
+      "id": "T1078",
+      "name": "Valid Accounts",
+      "tactic": "initial-access",
+      "status": "detected",
+      "detected_by": [
+        "ssh-root-login"
+      ],
+      "reason": "",
+      "run_id": "20261020T122543Z",
+      "start": "2026-10-20T12:26:32Z",
+      "end": "2026-10-20T12:26:32Z"
+    },
+    {
+      "id": "T1082",
+      "name": "System Information Discovery",
+      "tactic": "discovery",
+      "status": "missed",
+      "detected_by": [],
+      "reason": "no-rule",
+      "run_id": "20261020T122543Z",
+      "start": "2026-10-20T12:26:34Z",
+      "end": "2026-10-20T12:26:34Z"
+    },
+    {
+      "id": "T1033",
+      "name": "System Owner/User Discovery",
+      "tactic": "discovery",
+      "status": "missed",
+      "detected_by": [],
+      "reason": "no-rule",
+      "run_id": "20261020T122543Z",
+      "start": "2026-10-20T12:26:36Z",
+      "end": "2026-10-20T12:26:36Z"
+    },
+    {
+      "id": "T1083",
+      "name": "File and Directory Discovery",
+      "tactic": "discovery",
+      "status": "missed",
+      "detected_by": [],
+      "reason": "no-rule",
+      "run_id": "20261020T122543Z",
+      "start": "2026-10-20T12:26:37Z",
+      "end": "2026-10-20T12:26:38Z"
+    },
+    {
+      "id": "T1057",
+      "name": "Process Discovery",
+      "tactic": "discovery",
+      "status": "missed",
+      "detected_by": [],
+      "reason": "no-rule",
+      "run_id": "20261020T122543Z",
+      "start": "2026-10-20T12:26:39Z",
+      "end": "2026-10-20T12:26:39Z"
+    },
+    {
+      "id": "T1016",
+      "name": "System Network Configuration Discovery",
+      "tactic": "discovery",
+      "status": "missed",
+      "detected_by": [],
+      "reason": "no-rule",
+      "run_id": "20261020T122543Z",
+      "start": "2026-10-20T12:26:41Z",
+      "end": "2026-10-20T12:26:41Z"
+    },
+    {
+      "id": "T1087.001",
+      "name": "Account Discovery: Local Account",
+      "tactic": "discovery",
+      "status": "missed",
+      "detected_by": [],
+      "reason": "no-rule",
+      "run_id": "20261020T122543Z",
+      "start": "2026-10-20T12:26:43Z",
+      "end": "2026-10-20T12:26:43Z"
+    },
+    {
+      "id": "T1036.005",
+      "name": "Masquerading: Match Legitimate Name or Location",
+      "tactic": "defense-evasion",
+      "status": "missed",
+      "detected_by": [],
+      "reason": "no-rule",
+      "run_id": "20261020T122543Z",
+      "start": "2026-10-20T12:26:44Z",
+      "end": "2026-10-20T12:26:46Z"
+    },
+    {
+      "id": "T1053.003",
+      "name": "Scheduled Task/Job: Cron",
+      "tactic": "persistence",
+      "status": "detected",
+      "detected_by": [
+        "cron-persistence"
+      ],
+      "reason": "",
+      "run_id": "20261020T122543Z",
+      "start": "2026-10-20T12:26:47Z",
+      "end": "2026-10-20T12:26:47Z"
+    }
+  ],
+  "gaps": [
+    {
+      "id": "T1036.005",
+      "tactic": "defense-evasion",
+      "reason": "no-rule"
+    },
+    {
+      "id": "T1016",
+      "tactic": "discovery",
+      "reason": "no-rule"
+    },
+    {
+      "id": "T1033",
+      "tactic": "discovery",
+      "reason": "no-rule"
+    },
+    {
+      "id": "T1057",
+      "tactic": "discovery",
+      "reason": "no-rule"
+    },
+    {
+      "id": "T1082",
+      "tactic": "discovery",
+      "reason": "no-rule"
+    },
+    {
+      "id": "T1083",
+      "tactic": "discovery",
+      "reason": "no-rule"
+    },
+    {
+      "id": "T1087.001",
+      "tactic": "discovery",
+      "reason": "no-rule"
+    }
+  ],
+  "untested_detections": [
+    {
+      "rule_id": "sudo-root-shell",
+      "techniques": [
+        "T1548.003"
+      ]
+    },
+    {
+      "rule_id": "user-created",
+      "techniques": [
+        "T1136.001"
+      ]
+    }
+  ],
+  "unattributed_alerts": []
+}

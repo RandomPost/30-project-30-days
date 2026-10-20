@@ -1,0 +1,9 @@
+.git
+tests
+scripts
+**/__pycache__
+*.egg-info
+.pytest_cache
+*.jsonl
+README.md
+CLAUDE.md

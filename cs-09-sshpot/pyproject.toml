@@ -1,0 +1,27 @@
+[project]
+name = "sshpot"
+version = "0.1.0"
+description = "Low-interaction SSH honeypot with JSON-lines logs and an analytics CLI"
+requires-python = ">=3.10"
+dependencies = ["asyncssh>=2.14"]
+
+[project.optional-dependencies]
+dev = ["pytest", "pytest-asyncio", "pyyaml", "black"]
+
+[project.scripts]
+sshpot = "sshpot.cli:main"
+
+[tool.setuptools]
+packages = ["sshpot"]
+include-package-data = true
+
+[tool.setuptools.package-data]
+sshpot = ["data/*.csv"]
+
+[tool.black]
+line-length = 88
+target-version = ["py310"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"

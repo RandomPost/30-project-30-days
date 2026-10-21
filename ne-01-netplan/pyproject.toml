@@ -1,0 +1,22 @@
+[project]
+name = "netplan"
+version = "0.1.0"
+description = "Subnet calculator, VLSM planner and overlap checker for IPv4 and IPv6"
+requires-python = ">=3.10"
+dependencies = ["rich>=13"]
+
+[project.optional-dependencies]
+dev = ["pytest", "black"]
+
+[project.scripts]
+netplan = "netplan.cli:main"
+
+[tool.setuptools]
+packages = ["netplan"]
+
+[tool.black]
+line-length = 88
+target-version = ["py310"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

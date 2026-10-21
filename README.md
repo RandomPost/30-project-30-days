@@ -12,3 +12,4 @@ One small project per day for 30 days, built with Claude Code.
 - [cs-08-minisiem](cs-08-minisiem/)
 - [cs-09-sshpot](cs-09-sshpot/)
 - [cs-10-purple-lab](cs-10-purple-lab/)
+- [ne-01-netplan](ne-01-netplan/)

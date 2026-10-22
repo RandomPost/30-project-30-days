@@ -1,0 +1,22 @@
+[project]
+name = "netmon"
+version = "0.1.0"
+description = "Asyncio ping and TCP latency, jitter and loss monitor with SQLite storage and PNG charts"
+requires-python = ">=3.10"
+dependencies = ["matplotlib>=3.7"]
+
+[project.optional-dependencies]
+dev = ["pytest", "black"]
+
+[project.scripts]
+netmon = "netmon.cli:main"
+
+[tool.setuptools]
+packages = ["netmon"]
+
+[tool.black]
+line-length = 88
+target-version = ["py310"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

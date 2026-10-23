@@ -1,0 +1,22 @@
+[project]
+name = "pcaplens"
+version = "0.1.0"
+description = "PCAP analyzer: talkers, protocols, DNS, TCP health, scan and DNS-tunnel detection, HTML report"
+requires-python = ">=3.10"
+dependencies = ["scapy>=2.5"]
+
+[project.optional-dependencies]
+dev = ["pytest", "black"]
+
+[project.scripts]
+pcaplens = "pcaplens.cli:main"
+
+[tool.setuptools]
+packages = ["pcaplens"]
+
+[tool.black]
+line-length = 88
+target-version = ["py310"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

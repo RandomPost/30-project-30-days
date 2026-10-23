@@ -14,3 +14,4 @@ One small project per day for 30 days, built with Claude Code.
 - [cs-10-purple-lab](cs-10-purple-lab/)
 - [ne-01-netplan](ne-01-netplan/)
 - [ne-02-netmon](ne-02-netmon/)
+- [ne-03-pcaplens](ne-03-pcaplens/)

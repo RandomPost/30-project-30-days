@@ -1,0 +1,22 @@
+[project]
+name = "ospflab"
+version = "0.1.0"
+description = "Verification and failover tooling for a containerlab FRRouting OSPF lab"
+requires-python = ">=3.10"
+dependencies = []
+
+[project.optional-dependencies]
+dev = ["pytest", "black"]
+
+[project.scripts]
+ospflab = "ospflab.cli:main"
+
+[tool.setuptools]
+packages = ["ospflab"]
+
+[tool.black]
+line-length = 88
+target-version = ["py310"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

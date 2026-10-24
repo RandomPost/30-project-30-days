@@ -1,0 +1,8 @@
+python3 -m ospflab failover r1-r3
+before: r1 reaches 192.168.3.0/24 via 10.0.13.2
+r1-r3: r1:eth2 down
+after:  r1 reaches 192.168.3.0/24 via 10.0.12.2 (route changed 0.20s after the break)
+r1-r3: r1:eth2 up
+ping h1 -> h2: 80/80 replies, 0 lost = about 0.0s without connectivity
+restored: r1 reaches 192.168.3.0/24 via 10.0.13.2
+FAILOVER DEMONSTRATED

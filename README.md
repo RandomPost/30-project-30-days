@@ -15,3 +15,4 @@ One small project per day for 30 days, built with Claude Code.
 - [ne-01-netplan](ne-01-netplan/)
 - [ne-02-netmon](ne-02-netmon/)
 - [ne-03-pcaplens](ne-03-pcaplens/)
+- [ne-04-ospf-lab](ne-04-ospf-lab/)

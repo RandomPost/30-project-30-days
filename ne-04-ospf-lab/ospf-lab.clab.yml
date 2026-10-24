@@ -1,0 +1,48 @@
+# Three FRRouting routers in a triangle running OSPF area 0, one Linux host behind r1 and
+# one behind r3.  Override the images with FRR_IMAGE / HOST_IMAGE when Docker Hub is not reachable.
+name: ospf
+
+mgmt:
+  network: ospf-mgmt
+  ipv4-subnet: 172.20.30.0/24
+
+topology:
+  nodes:
+    r1: &router
+      kind: linux
+      image: ${FRR_IMAGE:-docker.io/frrouting/frr:v8.4.1}
+      binds:
+        - configs/daemons:/etc/frr/daemons
+        - configs/vtysh.conf:/etc/frr/vtysh.conf
+        - configs/r1/frr.conf:/etc/frr/frr.conf
+    r2:
+      <<: *router
+      binds:
+        - configs/daemons:/etc/frr/daemons
+        - configs/vtysh.conf:/etc/frr/vtysh.conf
+        - configs/r2/frr.conf:/etc/frr/frr.conf
+    r3:
+      <<: *router
+      binds:
+        - configs/daemons:/etc/frr/daemons
+        - configs/vtysh.conf:/etc/frr/vtysh.conf
+        - configs/r3/frr.conf:/etc/frr/frr.conf
+    h1:
+      kind: linux
+      image: ${HOST_IMAGE:-docker.io/library/alpine:3.20}
+      exec:
+        - ip addr add 192.168.1.10/24 dev eth1
+        - ip route replace default via 192.168.1.1 dev eth1
+    h2:
+      kind: linux
+      image: ${HOST_IMAGE:-docker.io/library/alpine:3.20}
+      exec:
+        - ip addr add 192.168.3.10/24 dev eth1
+        - ip route replace default via 192.168.3.1 dev eth1
+
+  links:
+    - endpoints: ["r1:eth1", "r2:eth1"]   # 10.0.12.0/30
+    - endpoints: ["r2:eth2", "r3:eth1"]   # 10.0.23.0/30
+    - endpoints: ["r1:eth2", "r3:eth2"]   # 10.0.13.0/30
+    - endpoints: ["h1:eth1", "r1:eth3"]   # 192.168.1.0/24
+    - endpoints: ["h2:eth1", "r3:eth3"]   # 192.168.3.0/24

@@ -1,0 +1,25 @@
+$ netgen validate   # duplicate IP + trunk VLAN mismatch introduced on purpose
+data/sites.yml: 3 validation error(s)
+  - duplicate IP 10.1.1.1 on hq-sw1 Vlan10, branch-east-sw1 Vlan10
+  - hq: hq-sw1 GigabitEthernet0/24 uses VLAN 31, which the site does not define
+  - hq: link hq-sw1:GigabitEthernet0/24 <-> hq-sw2:GigabitEthernet0/1: trunk VLAN mismatch ([10, 20, 31] vs [10, 20, 30])
+
+$ netgen diff       # after changing one SVI address
+unchanged branch-east-r1.cfg
+unchanged branch-east-sw1.cfg
+unchanged branch-west-r1.cfg
+unchanged branch-west-sw1.cfg
+unchanged hq-r1.cfg
+changed   hq-sw1.cfg
+--- a/hq-sw1.cfg
++++ b/hq-sw1.cfg
+@@ -21,7 +21,7 @@
+ !
+ interface Vlan10
+  description users
+- ip address 10.1.1.1 255.255.255.0
++ ip address 10.1.1.254 255.255.255.0
+  no shutdown
+ !
+ interface Vlan20
+unchanged hq-sw2.cfg

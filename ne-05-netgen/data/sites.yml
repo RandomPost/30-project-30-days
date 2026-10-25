@@ -1,0 +1,204 @@
+# Source of truth. Validate with `netgen validate`, render with `netgen render`.
+sites:
+
+  # --- added by netgen scaffold ---
+  - name: hq
+    vlans:
+    - id: 10
+      name: users
+    - id: 20
+      name: voice
+    - id: 30
+      name: servers
+    devices:
+    - name: hq-r1
+      platform: frr
+      role: router
+      loopback: 10.255.1.1/32
+      interfaces:
+      - name: eth1
+        description: downlink to hq-sw1
+        ip: 10.1.0.1/30
+        ospf_area: 0
+    - name: hq-sw1
+      platform: ios
+      role: l3-switch
+      loopback: 10.255.1.2/32
+      interfaces:
+      - name: GigabitEthernet0/1
+        description: uplink to hq-r1
+        ip: 10.1.0.2/30
+        ospf_area: 0
+      - name: Vlan10
+        mode: svi
+        vlan: 10
+        ip: 10.1.1.1/24
+        description: users
+        ospf_area: 0
+      - name: Vlan20
+        mode: svi
+        vlan: 20
+        ip: 10.1.2.1/24
+        description: voice
+        ospf_area: 0
+      - name: Vlan30
+        mode: svi
+        vlan: 30
+        ip: 10.1.3.1/24
+        description: servers
+        ospf_area: 0
+      - name: GigabitEthernet0/2
+        description: users access
+        mode: access
+        vlan: 10
+      - name: GigabitEthernet0/3
+        description: voice access
+        mode: access
+        vlan: 20
+      - name: GigabitEthernet0/4
+        description: servers access
+        mode: access
+        vlan: 30
+      - name: GigabitEthernet0/24
+        description: trunk to hq-sw2
+        mode: trunk
+        trunk_vlans:
+        - 10
+        - 20
+        - 30
+    - name: hq-sw2
+      platform: ios
+      role: access-switch
+      interfaces:
+      - name: GigabitEthernet0/1
+        description: trunk to hq-sw1
+        mode: trunk
+        trunk_vlans:
+        - 10
+        - 20
+        - 30
+      - name: GigabitEthernet0/2
+        description: users access
+        mode: access
+        vlan: 10
+      - name: GigabitEthernet0/3
+        description: voice access
+        mode: access
+        vlan: 20
+    links:
+    - a: hq-r1:eth1
+      b: hq-sw1:GigabitEthernet0/1
+    - a: hq-sw1:GigabitEthernet0/24
+      b: hq-sw2:GigabitEthernet0/1
+
+  # --- added by netgen scaffold ---
+  - name: branch-east
+    vlans:
+    - id: 10
+      name: users
+    - id: 50
+      name: guest
+    devices:
+    - name: branch-east-r1
+      platform: frr
+      role: router
+      loopback: 10.255.2.1/32
+      interfaces:
+      - name: eth1
+        description: downlink to branch-east-sw1
+        ip: 10.2.0.1/30
+        ospf_area: 0
+    - name: branch-east-sw1
+      platform: ios
+      role: l3-switch
+      loopback: 10.255.2.2/32
+      interfaces:
+      - name: GigabitEthernet0/1
+        description: uplink to branch-east-r1
+        ip: 10.2.0.2/30
+        ospf_area: 0
+      - name: Vlan10
+        mode: svi
+        vlan: 10
+        ip: 10.2.1.1/24
+        description: users
+        ospf_area: 0
+      - name: Vlan50
+        mode: svi
+        vlan: 50
+        ip: 10.2.2.1/24
+        description: guest
+        ospf_area: 0
+      - name: GigabitEthernet0/2
+        description: users access
+        mode: access
+        vlan: 10
+      - name: GigabitEthernet0/3
+        description: guest access
+        mode: access
+        vlan: 50
+      - name: GigabitEthernet0/24
+        description: trunk to access point
+        mode: trunk
+        trunk_vlans:
+        - 10
+        - 50
+    links:
+    - a: branch-east-r1:eth1
+      b: branch-east-sw1:GigabitEthernet0/1
+
+  # --- added by netgen scaffold ---
+  - name: branch-west
+    vlans:
+    - id: 10
+      name: users
+    - id: 20
+      name: voice
+    devices:
+    - name: branch-west-r1
+      platform: frr
+      role: router
+      loopback: 10.255.3.1/32
+      interfaces:
+      - name: eth1
+        description: downlink to branch-west-sw1
+        ip: 10.3.0.1/30
+        ospf_area: 0
+    - name: branch-west-sw1
+      platform: ios
+      role: l3-switch
+      loopback: 10.255.3.2/32
+      interfaces:
+      - name: GigabitEthernet0/1
+        description: uplink to branch-west-r1
+        ip: 10.3.0.2/30
+        ospf_area: 0
+      - name: Vlan10
+        mode: svi
+        vlan: 10
+        ip: 10.3.1.1/24
+        description: users
+        ospf_area: 0
+      - name: Vlan20
+        mode: svi
+        vlan: 20
+        ip: 10.3.2.1/24
+        description: voice
+        ospf_area: 0
+      - name: GigabitEthernet0/2
+        description: users access
+        mode: access
+        vlan: 10
+      - name: GigabitEthernet0/3
+        description: voice access
+        mode: access
+        vlan: 20
+      - name: GigabitEthernet0/24
+        description: trunk to access point
+        mode: trunk
+        trunk_vlans:
+        - 10
+        - 20
+    links:
+    - a: branch-west-r1:eth1
+      b: branch-west-sw1:GigabitEthernet0/1

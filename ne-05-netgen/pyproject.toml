@@ -1,0 +1,25 @@
+[project]
+name = "netgen"
+version = "0.1.0"
+description = "Config generator: YAML source of truth, Pydantic validation, Jinja2 templates for IOS-style and FRR"
+requires-python = ">=3.10"
+dependencies = ["pydantic>=2", "jinja2>=3", "pyyaml>=6"]
+
+[project.optional-dependencies]
+dev = ["pytest", "black"]
+
+[project.scripts]
+netgen = "netgen.cli:main"
+
+[tool.setuptools]
+packages = ["netgen"]
+
+[tool.setuptools.package-data]
+netgen = ["templates/*.j2"]
+
+[tool.black]
+line-length = 88
+target-version = ["py310"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

@@ -17,3 +17,4 @@ One small project per day for 30 days, built with Claude Code.
 - [ne-03-pcaplens](ne-03-pcaplens/)
 - [ne-04-ospf-lab](ne-04-ospf-lab/)
 - [ne-05-netgen](ne-05-netgen/)
+- [ne-06-confdrift](ne-06-confdrift/)

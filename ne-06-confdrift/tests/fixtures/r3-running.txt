@@ -1,0 +1,46 @@
+
+% Can't open configuration file /etc/frr/vtysh.conf due to 'Permission denied'.
+Building configuration...
+
+Current configuration:
+!
+frr version 8.4.4
+frr defaults traditional
+hostname r3
+log stdout informational
+!
+interface eth1
+ ip address 10.0.23.2/30
+ ip ospf area 0
+ ip ospf cost 10
+ ip ospf dead-interval 3
+ ip ospf hello-interval 1
+ ip ospf network point-to-point
+exit
+!
+interface eth2
+ ip address 10.0.13.2/30
+ ip ospf area 0
+ ip ospf cost 10
+ ip ospf dead-interval 3
+ ip ospf hello-interval 1
+ ip ospf network point-to-point
+exit
+!
+interface eth3
+ ip address 192.168.3.1/24
+ ip ospf area 0
+ ip ospf cost 10
+ ip ospf passive
+exit
+!
+interface lo
+ ip address 10.255.0.3/32
+ ip ospf area 0
+exit
+!
+router ospf
+ ospf router-id 10.255.0.3
+exit
+!
+end

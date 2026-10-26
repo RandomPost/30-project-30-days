@@ -1,0 +1,22 @@
+[project]
+name = "confdrift"
+version = "0.1.0"
+description = "Back up router configs into git and detect drift from the intended (netgen) config"
+requires-python = ">=3.10"
+dependencies = ["netmiko>=4", "pyyaml>=6", "pydantic>=2", "netgen"]
+
+[project.optional-dependencies]
+dev = ["pytest", "black"]
+
+[project.scripts]
+confdrift = "confdrift.cli:main"
+
+[tool.setuptools]
+packages = ["confdrift"]
+
+[tool.black]
+line-length = 88
+target-version = ["py310"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

@@ -42,11 +42,8 @@ def test_change_commit_names_device_and_counts_lines(store):
     assert subject == "backup: config changed on r1 (+1/-1 lines)"
     body = store.git("log", "-1", "--format=%b")
     assert "1 of 2 device(s) changed" in body
-    assert (
-        "-ip ospf cost 10" in body.replace("- ip", "-ip").replace("-  ip", "-ip")
-        or " ip ospf cost 10" in body
-    )
-    assert "+ ip ospf cost 100" in body
+    assert "\n    - ip ospf cost 10\n" in body
+    assert "\n    + ip ospf cost 100" in body
 
 
 def test_one_commit_per_run_for_several_devices(store):

@@ -23,8 +23,18 @@ interface {{ i.name }}
 {% endif %}
 {% if i.ospf_area is not none %}
  ip ospf area {{ i.ospf_area }}
-{% if i.mode == "routed" %}
+{% if i.ospf_cost %}
+ ip ospf cost {{ i.ospf_cost }}
+{% endif %}
+{% if i.mode == "routed" and not i.ospf_passive %}
  ip ospf network point-to-point
+{% endif %}
+{% if i.ospf_hello %}
+ ip ospf hello-interval {{ i.ospf_hello }}
+ ip ospf dead-interval {{ i.ospf_dead }}
+{% endif %}
+{% if i.ospf_passive %}
+ ip ospf passive
 {% endif %}
 {% endif %}
 {% if i.shutdown %}

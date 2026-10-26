@@ -38,6 +38,10 @@ class Interface(Strict):
     vlan: Optional[int] = Field(default=None, ge=1, le=4094)
     trunk_vlans: list[int] = Field(default_factory=list)
     ospf_area: Optional[int] = Field(default=None, ge=0)
+    ospf_cost: Optional[int] = Field(default=None, ge=1, le=65535)
+    ospf_hello: Optional[int] = Field(default=None, ge=1, le=65535)
+    ospf_dead: Optional[int] = Field(default=None, ge=1, le=65535)
+    ospf_passive: bool = False
     shutdown: bool = False
 
     @field_validator("ip")
@@ -65,6 +69,15 @@ class Interface(Strict):
             raise ValueError(f"{self.name}: {self.mode} port cannot have an ip")
         if self.mode != "trunk" and self.trunk_vlans:
             raise ValueError(f"{self.name}: 'trunk_vlans' only applies to trunk ports")
+        has_ospf_opts = (
+            self.ospf_cost or self.ospf_hello or self.ospf_dead or self.ospf_passive
+        )
+        if has_ospf_opts and self.ospf_area is None:
+            raise ValueError(f"{self.name}: ospf options need 'ospf_area'")
+        if (self.ospf_hello is None) != (self.ospf_dead is None):
+            raise ValueError(f"{self.name}: set ospf_hello and ospf_dead together")
+        if self.ospf_hello and self.ospf_dead and self.ospf_dead <= self.ospf_hello:
+            raise ValueError(f"{self.name}: ospf_dead must exceed ospf_hello")
         if self.mode in ("routed", "trunk") and self.vlan is not None:
             raise ValueError(f"{self.name}: 'vlan' not allowed on {self.mode} port")
         return self

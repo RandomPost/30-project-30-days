@@ -129,3 +129,25 @@ def test_new_site_refuses_bad_input_and_leaves_file_alone(source, capsys, args, 
     assert run("-s", source, "new-site", *args) == 1
     assert msg in capsys.readouterr().err
     assert source.read_text() == before
+
+
+def test_frr_ospf_tuning_options(tmp_path):
+    from netgen.loader import parse
+
+    inv = parse("""
+sites:
+- name: t
+  devices:
+  - name: t-r1
+    platform: frr
+    loopback: 10.9.9.1/32
+    interfaces:
+    - {name: eth1, ip: 10.9.0.1/30, ospf_area: 0, ospf_cost: 10, ospf_hello: 1, ospf_dead: 3}
+    - {name: eth3, ip: 192.168.9.1/24, ospf_area: 0, ospf_cost: 10, ospf_passive: true}
+""")
+    text = render.render_all(inv)["t-r1.cfg"]
+    eth1 = text.split("interface eth1")[1].split("exit")[0]
+    eth3 = text.split("interface eth3")[1].split("exit")[0]
+    assert "ip ospf cost 10" in eth1 and "ip ospf hello-interval 1" in eth1
+    assert "ip ospf dead-interval 3" in eth1 and "point-to-point" in eth1
+    assert "ip ospf passive" in eth3 and "point-to-point" not in eth3

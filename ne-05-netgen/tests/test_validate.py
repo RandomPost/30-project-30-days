@@ -172,3 +172,23 @@ def test_unknown_field_rejected():
 def test_yaml_syntax_error():
     with pytest.raises(SourceError, match="syntax"):
         parse("sites: [\n")
+
+
+@pytest.mark.parametrize(
+    "extra,msg",
+    [
+        ("ospf_cost: 5", "need 'ospf_area'"),
+        ("ospf_area: 0, ospf_hello: 1", "together"),
+        ("ospf_area: 0, ospf_hello: 5, ospf_dead: 3", "must exceed"),
+        ("ospf_area: 0, ospf_cost: 0", "greater than or equal to 1"),
+    ],
+)
+def test_ospf_option_rules(extra, msg):
+    bad = BASE.replace("ip: 10.1.9.1/30}", "ip: 10.1.9.1/30, " + extra + "}")
+    bad = bad.replace(
+        "interfaces:\n    - {name: Gi0/2, mode: trunk",
+        "loopback: 10.9.9.9/32\n    interfaces:\n    - {name: Gi0/2, mode: trunk",
+        2,
+    )
+    with pytest.raises(SourceError, match=msg):
+        parse(bad)

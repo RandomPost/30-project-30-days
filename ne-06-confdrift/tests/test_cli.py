@@ -23,7 +23,7 @@ class FakeFetcher:
         text = (FIX / f"{device.name}-running.txt").read_text()
         for old, new in self.overrides.get(device.name, []):
             assert old in text
-            text = text.replace(old, new)
+            text = text.replace(old, new, 1)
         return text
 
 

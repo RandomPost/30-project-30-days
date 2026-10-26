@@ -113,3 +113,12 @@ def test_redact_leaves_normal_lines_alone():
 def test_canonical_is_stable():
     blocks = normalize.parse("interface b\n y\n x\ninterface a\n z\n")
     assert normalize.canonical(blocks) == "interface a\n z\ninterface b\n x\n y\n"
+
+
+def test_strip_chrome_removes_per_run_noise():
+    raw = (
+        "\n% Can't open configuration file /etc/frr/vtysh.conf\n"
+        "Building configuration...\n\nCurrent configuration:\n!\n"
+        "! Last configuration change at 10:01:02 UTC Mon Oct 26 2026\nhostname r1\n"
+    )
+    assert normalize.strip_chrome(raw) == "!\nhostname r1\n"

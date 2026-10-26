@@ -60,3 +60,18 @@ def canonical(blocks: Blocks) -> str:
         out.append(header)
         out.extend(" " + child for child in sorted(set(blocks[header])))
     return "\n".join(out) + ("\n" if out else "")
+
+
+_CHROME = re.compile(
+    r"^(%|Building configuration|Current configuration|! Last configuration change|"
+    r"! NVRAM config last updated|! Time:)"
+)
+
+
+def strip_chrome(text: str) -> str:
+    """Drop CLI chatter that changes between runs without the config changing, so a
+    backup only differs from the last one when the configuration did."""
+    lines = [ln.rstrip() for ln in text.splitlines() if not _CHROME.match(ln)]
+    while lines and not lines[0].strip():
+        lines.pop(0)
+    return "\n".join(lines) + "\n"

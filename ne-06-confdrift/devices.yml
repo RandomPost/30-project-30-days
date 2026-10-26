@@ -1,0 +1,8 @@
+# Routers of the NE-04 lab (containerlab adds clab-ospf-<node> to /etc/hosts).
+# Credentials are NOT here: export CONFDRIFT_USER and CONFDRIFT_PASSWORD.
+intended: intended/lab.yml
+backups: backups
+devices:
+  - {name: r1, host: clab-ospf-r1}
+  - {name: r2, host: clab-ospf-r2}
+  - {name: r3, host: clab-ospf-r3}

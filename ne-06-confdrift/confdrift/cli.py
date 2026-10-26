@@ -10,7 +10,7 @@ from confdrift.config import Config, ConfigError, credentials, load_config
 from confdrift.fetch import FetchError, Fetcher, NetmikoFetcher
 from confdrift.normalize import strip_chrome
 from confdrift.redact import redact
-from confdrift.store import Store
+from confdrift.store import GitError, Store
 
 DEFAULT_CONFIG = Path("devices.yml")
 
@@ -113,6 +113,6 @@ def main(argv: list[str] | None = None, fetcher: Fetcher | None = None) -> int:
         if fetcher is None:
             fetcher = NetmikoFetcher(*credentials())
         return (run_backup if a.cmd == "backup" else run_drift)(cfg, fetcher)
-    except ConfigError as exc:
+    except (ConfigError, GitError) as exc:
         print(f"error: {exc}", file=sys.stderr)
         return 2

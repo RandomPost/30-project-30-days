@@ -1,0 +1,96 @@
+
+$ python3 -m confdrift drift
+r1: in sync with intended config
+r2: in sync with intended config
+r3: in sync with intended config
+(exit 0)
+
+$ python3 -m confdrift backup
+backup: first snapshot of 3 device(s): r1, r2, r3
+(exit 0)
+
+$ ssh netops@r1: interface eth2 / ip ospf cost 100
+
+$ python3 -m confdrift drift
+r1: DRIFT (2 line(s) differ)
+  [interface eth2]
+    missing on device: ip ospf cost 10
+    unexpected on device: ip ospf cost 100
+
+--- intended/r1
++++ running/r1
+@@ -9,7 +9,7 @@
+ interface eth2
+  ip address 10.0.13.1/30
+  ip ospf area 0
+- ip ospf cost 10
++ ip ospf cost 100
+  ip ospf dead-interval 3
+  ip ospf hello-interval 1
+  ip ospf network point-to-point
+r2: in sync with intended config
+r3: in sync with intended config
+(exit 1)
+
+$ python3 -m confdrift backup
+backup: config changed on r1 (+1/-1 lines)
+(exit 0)
+
+$ git -C backups log --stat
+commit c43e3bb
+    backup: config changed on r1 (+1/-1 lines)
+1 of 3 device(s) changed since the previous run.
+
+r1: +1/-1
+    - ip ospf cost 10
+    + ip ospf cost 100
+
+
+ r1.cfg | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+commit 9d77112
+    backup: first snapshot of 3 device(s): r1, r2, r3
+3 of 3 device(s) changed since the previous run.
+
+r1: new file, +41/-0
+r2: new file, +34/-0
+r3: new file, +41/-0
+
+
+ r1.cfg | 41 +++++++++++++++++++++++++++++++++++++++++
+ r2.cfg | 34 ++++++++++++++++++++++++++++++++++
+ r3.cfg | 41 +++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 116 insertions(+)
+
+$ git -C backups diff HEAD~1 HEAD
+diff --git a/r1.cfg b/r1.cfg
+index b909b26..20bae8d 100644
+--- a/r1.cfg
++++ b/r1.cfg
+@@ -16,7 +16,7 @@ exit
+ interface eth2
+  ip address 10.0.13.1/30
+  ip ospf area 0
+- ip ospf cost 10
++ ip ospf cost 100
+  ip ospf dead-interval 3
+  ip ospf hello-interval 1
+  ip ospf network point-to-point
+
+$ (change reverted on r1)
+
+$ python3 -m confdrift drift
+r1: in sync with intended config
+r2: in sync with intended config
+r3: in sync with intended config
+(exit 0)
+
+$ python3 -m confdrift backup
+backup: config changed on r1 (+1/-1 lines)
+(exit 0)
+
+$ python3 -m confdrift log r1
+ea17b05 2026-10-26 backup: config changed on r1 (+1/-1 lines)
+c43e3bb 2026-10-26 backup: config changed on r1 (+1/-1 lines)
+9d77112 2026-10-26 backup: first snapshot of 3 device(s): r1, r2, r3
+(exit 0)

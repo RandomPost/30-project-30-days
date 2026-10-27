@@ -1,0 +1,54 @@
+{
+  "lldp": {
+    "interface": {
+      "eth1": {
+        "via": "LLDP",
+        "rid": "2",
+        "age": "0 day, 00:00:48",
+        "chassis": {
+          "r2": {
+            "id": {
+              "type": "mac",
+              "value": "fe:31:58:1a:3a:bc"
+            },
+            "descr": "Ubuntu 24.04.5 LTS Linux 6.18.44-fc-v165 #1 SMP PREEMPT_DYNAMIC @0 x86_64",
+            "mgmt-ip": "172.20.30.5",
+            "mgmt-iface": "2",
+            "capability": [
+              {
+                "type": "Bridge",
+                "enabled": false
+              },
+              {
+                "type": "Router",
+                "enabled": true
+              },
+              {
+                "type": "Wlan",
+                "enabled": false
+              },
+              {
+                "type": "Station",
+                "enabled": false
+              }
+            ]
+          }
+        },
+        "port": {
+          "id": {
+            "type": "mac",
+            "value": "aa:c1:ab:cf:1a:67"
+          },
+          "descr": "eth1",
+          "ttl": "120",
+          "auto-negotiation": {
+            "supported": false,
+            "enabled": false,
+            "current": "10GbaseT - Four-pair Category 6A or better, full duplex mode only"
+          }
+        }
+      }
+    }
+  }
+}
+

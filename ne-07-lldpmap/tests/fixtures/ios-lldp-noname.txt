@@ -1,0 +1,20 @@
+------------------------------------------------
+Local Intf: Gi0/5
+Chassis id: 00a0.c9aa.bb01
+Port id: 00a0.c9aa.bb01
+Port Description - not advertised
+System Name - not advertised
+
+System Description - not advertised
+
+Time remaining: 90 seconds
+System Capabilities: T
+Enabled Capabilities: T
+Management Addresses - not advertised
+Auto Negotiation - not supported
+Physical media capabilities - not advertised
+Media Attachment Unit type - not advertised
+Vlan ID: - not advertised
+
+
+Total entries displayed: 1

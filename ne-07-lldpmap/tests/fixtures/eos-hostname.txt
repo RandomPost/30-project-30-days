@@ -1,0 +1,3 @@
+# NOTE: hand-written from Arista documentation/knowledge; NOT captured from a real device.
+Hostname: leaf1
+FQDN:     leaf1.example.net

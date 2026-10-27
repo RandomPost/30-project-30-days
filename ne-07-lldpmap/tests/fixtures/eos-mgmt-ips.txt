@@ -1,0 +1,20 @@
+# NOTE: hand-written from Arista documentation/knowledge; NOT captured from a real device.
+Interface Ethernet3 detected 1 LLDP neighbors:
+
+  Neighbor 001c.7300.1506/Ethernet6/25, age 8 seconds
+  Discovered 1:00:00 ago; Last changed 1:00:00 ago
+  - Chassis ID type: MAC address (4)
+    Chassis ID     : 001c.7300.1506
+  - Port ID type: Interface name (5)
+    Port ID        : "Ethernet6/25"
+  - Time To Live: 120 seconds
+  - System Name: "core1.example.net"
+  - System Description: "Arista Networks EOS version 4.27.1F"
+  - Management Address Subtype: IPv6 (2)
+    Management Address        : 2001:db8::1
+    Interface Number Subtype  : ifIndex (2)
+    Interface Number          : 1
+  - Management Address Subtype: IPv4 (1)
+    Management Address        : 192.0.2.10
+    Interface Number Subtype  : ifIndex (2)
+    Interface Number          : 1

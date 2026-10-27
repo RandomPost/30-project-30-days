@@ -1,0 +1,22 @@
+[project]
+name = "lldpmap"
+version = "0.1.0"
+description = "Crawl a network over LLDP/CDP, draw the topology, and diff two crawls"
+requires-python = ">=3.10"
+dependencies = ["netmiko>=4", "pyvis>=0.3.2"]
+
+[project.optional-dependencies]
+dev = ["pytest", "black"]
+
+[project.scripts]
+lldpmap = "lldpmap.cli:main"
+
+[tool.setuptools]
+packages = ["lldpmap", "lldpmap.parsers"]
+
+[tool.black]
+line-length = 88
+target-version = ["py310"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

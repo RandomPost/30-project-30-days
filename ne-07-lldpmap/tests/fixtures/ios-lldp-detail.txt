@@ -1,0 +1,46 @@
+------------------------------------------------
+Local Intf: Gi0/1
+Chassis id: 0011.2233.4455
+Port id: Gi0/2
+Port Description: GigabitEthernet0/2
+System Name: sw2.example.net
+
+System Description: 
+Cisco IOS Software, C3750E Software (C3750E-UNIVERSALK9-M), Version 15.0(2)SE11, RELEASE SOFTWARE (fc3)
+Technical Support: http://www.cisco.com/techsupport
+Copyright (c) 1986-2017 by Cisco Systems, Inc.
+
+Time remaining: 108 seconds
+System Capabilities: B,R
+Enabled Capabilities: B,R
+Management Addresses:
+    IP: 10.0.0.2
+Auto Negotiation - supported, enabled
+Physical media capabilities:
+    1000baseT(FD)
+Media Attachment Unit type: 30
+Vlan ID: - not advertised
+
+------------------------------------------------
+Local Intf: Gi0/3
+Chassis id: 0a1b.2c3d.4e5f
+Port id: Ethernet1
+Port Description: uplink to core
+System Name: R2
+
+System Description: 
+Cisco IOS Software, IOSv Software (VIOS-ADVENTERPRISEK9-M), Version 15.6(2)T, RELEASE SOFTWARE (fc2)
+
+Time remaining: 96 seconds
+System Capabilities: R
+Enabled Capabilities: R
+Management Addresses:
+    IP: 10.0.0.3
+    IPV6: 2001:DB8::3
+Auto Negotiation - not supported
+Physical media capabilities - not advertised
+Media Attachment Unit type - not advertised
+Vlan ID: - not advertised
+
+
+Total entries displayed: 2

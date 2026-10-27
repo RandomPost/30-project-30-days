@@ -12,7 +12,7 @@ RUN if [ -n "$APT_PROXY" ]; then echo "Acquire::http::Proxy \"$APT_PROXY\";" > /
  && DEBIAN_FRONTEND=noninteractive apt-get install -y -qq --no-install-recommends \
       frr openssh-server lldpd iproute2 iputils-ping \
  && rm -rf /var/lib/apt/lists/* /etc/apt/apt.conf.d/99proxy \
- && useradd -m -s /bin/bash -G frrvty,_lldpd "$LAB_SSH_USER" \
+ && useradd -m -s /bin/bash -G frrvty,_lldpd,adm "$LAB_SSH_USER" \
  && echo "$LAB_SSH_USER:$LAB_SSH_PASSWORD" | chpasswd \
  && mkdir -p /run/sshd
 

@@ -189,10 +189,7 @@ def test_graph_is_self_contained_and_marks_changes(tmp_path):
     out = tmp_path / "g.html"
     graph.render(new, out, previous=old)
     html = out.read_text()
-    assert (
-        "cdn.jsdelivr" not in html
-        and "http://" not in html.replace("http://www.w3.org", "")[:0] + ""
-    )
+    assert "cdn.jsdelivr" not in html and "<script src=" not in html
     for name in ("r1", "r2", "r3"):
         assert f'"id": "{name}"' in html
     assert "REMOVED since previous run" in html and graph.REMOVED in html

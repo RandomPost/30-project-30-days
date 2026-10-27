@@ -1,0 +1,20 @@
+
+$ python3 -m lldpmap crawl clab-ospf-r1 --name-template clab-ospf-{name} -o docs/run/before.json --html docs/run/before.html
+3 devices (3 crawled), 3 links -> docs/run/before.json
+graph -> docs/run/before.html
+(exit 0)
+
+$ docker exec clab-ospf-r1 ip link set eth2 down   # pull the r1-r3 cable
+
+$ python3 -m lldpmap crawl clab-ospf-r1 --name-template clab-ospf-{name} -o docs/run/after.json --html docs/run/after.html
+3 devices (3 crawled), 2 links -> docs/run/after.json
+graph -> docs/run/after.html
+(exit 0)
+
+$ python3 -m lldpmap diff docs/run/before.json docs/run/after.json --html docs/run/diff.html
+topology diff: 2026-10-27T12:29:00Z -> 2026-10-27T12:29:08Z
+- link removed: r1:eth2 <-> r3:eth2
+graph -> docs/run/diff.html
+(exit 1)
+
+$ docker exec clab-ospf-r1 ip link set eth2 up   # cable back

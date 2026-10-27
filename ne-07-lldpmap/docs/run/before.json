@@ -1,0 +1,60 @@
+{
+  "version": 1,
+  "taken": "2026-10-27T12:29:00Z",
+  "seed": "clab-ospf-r1",
+  "devices": [
+    {
+      "name": "r1",
+      "vendor": "frr",
+      "host": "clab-ospf-r1",
+      "crawled": true,
+      "note": null
+    },
+    {
+      "name": "r2",
+      "vendor": "frr",
+      "host": "172.20.30.4",
+      "crawled": true,
+      "note": null
+    },
+    {
+      "name": "r3",
+      "vendor": "frr",
+      "host": "172.20.30.5",
+      "crawled": true,
+      "note": null
+    }
+  ],
+  "links": [
+    {
+      "a": {
+        "device": "r1",
+        "port": "eth1"
+      },
+      "b": {
+        "device": "r2",
+        "port": "eth1"
+      }
+    },
+    {
+      "a": {
+        "device": "r1",
+        "port": "eth2"
+      },
+      "b": {
+        "device": "r3",
+        "port": "eth2"
+      }
+    },
+    {
+      "a": {
+        "device": "r2",
+        "port": "eth2"
+      },
+      "b": {
+        "device": "r3",
+        "port": "eth1"
+      }
+    }
+  ]
+}

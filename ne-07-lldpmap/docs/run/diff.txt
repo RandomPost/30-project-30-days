@@ -1,0 +1,2 @@
+topology diff: 2026-10-27T12:24:44Z -> 2026-10-27T12:24:58Z
+- link removed: r1:eth2 <-> r3:eth2

@@ -36,12 +36,12 @@ def test_overlay_for_unknown_device_is_an_error(tmp_path):
         snapshot.build(SOURCE, overlay, tmp_path / "snap")
 
 
-def test_expected_ospf_pairs_come_from_the_source_of_truth():
+def test_policy_ospf_sessions_name_real_devices():
     inv = snapshot.load_inventory(SOURCE)
-    pairs = expect.ospf_pairs(inv)
-    assert frozenset({"hq-r1", "hq-sw1"}) in pairs
-    assert frozenset({"branch-east-r1", "branch-east-sw1"}) in pairs
-    assert len(pairs) == 3  # one routed uplink per site
+    names = {d.name for s in inv.sites for d in s.devices}
+    pairs = expect.ospf_pairs()
+    assert len(pairs) == 3
+    assert all(len(p) == 2 and p <= names for p in pairs)
 
 
 def test_vlan_subnets_by_name():

@@ -1,0 +1,14 @@
+diff -ruN a/ne-08-batfish/network/overlay/branch-east-sw1.cfg b/ne-08-batfish/network/overlay/branch-east-sw1.cfg
+--- a/ne-08-batfish/network/overlay/branch-east-sw1.cfg	2026-10-28 12:33:42.789148177 +0000
++++ b/ne-08-batfish/network/overlay/branch-east-sw1.cfg	2026-10-28 12:33:42.822371798 +0000
+@@ -2,9 +2,8 @@
+ ! Guests may talk to their own subnet and to anything outside the 10/8 private
+ ! space, but not to management loopbacks (10.255.0.0/16) or other internal VLANs.
+ ip access-list extended GUEST-IN
+- permit ip 10.2.2.0 0.0.0.255 10.2.2.0 0.0.0.255
+- deny ip 10.2.2.0 0.0.0.255 10.0.0.0 0.255.255.255
+  permit ip any any
++ deny ip 10.2.2.0 0.0.0.255 10.0.0.0 0.255.255.255
+ !
+ interface Vlan50
+  ip access-group GUEST-IN in

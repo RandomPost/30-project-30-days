@@ -1,0 +1,40 @@
+name: ne-08 pre-change validation
+
+# Every pull request that touches the network definition (the netgen source of truth
+# or the NE-08 overlay/policy) is checked by Batfish before it can merge.
+on:
+  pull_request:
+    paths:
+      - "ne-05-netgen/**"
+      - "ne-08-batfish/**"
+      - ".github/workflows/ne-08-batfish.yml"
+
+jobs:
+  policies:
+    runs-on: ubuntu-latest
+    services:
+      batfish:
+        image: batfish/allinone:latest
+        ports:
+          - 9996:9996
+          - 9997:9997
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: pip install -e ne-05-netgen -e ne-08-batfish
+      - name: Wait for Batfish
+        run: |
+          for i in $(seq 1 60); do
+            curl -sf http://localhost:9996/v2/networks >/dev/null && exit 0
+            sleep 2
+          done
+          echo "Batfish did not start" >&2
+          exit 1
+      - name: Snapshot builder tests
+        run: python -m pytest -q ne-08-batfish/tests/test_snapshot.py
+      - name: Policies (Batfish)
+        # A failing policy prints the offending flow and the ACL or route that allowed it.
+        run: python -m pytest -ra --tb=short ne-08-batfish/tests/test_policies.py

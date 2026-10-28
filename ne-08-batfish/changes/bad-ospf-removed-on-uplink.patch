@@ -1,0 +1,11 @@
+diff -ruN a/ne-05-netgen/data/sites.yml b/ne-05-netgen/data/sites.yml
+--- a/ne-05-netgen/data/sites.yml	2026-10-28 12:33:42.790839088 +0000
++++ b/ne-05-netgen/data/sites.yml	2026-10-28 12:33:42.862504499 +0000
+@@ -28,7 +28,6 @@
+       - name: GigabitEthernet0/1
+         description: uplink to hq-r1
+         ip: 10.1.0.2/30
+-        ospf_area: 0
+       - name: Vlan10
+         mode: svi
+         vlan: 10

@@ -5,28 +5,21 @@ from __future__ import annotations
 
 import ipaddress
 from dataclasses import dataclass
+from pathlib import Path
+
+import yaml
 
 from netgen.models import Inventory
 
+DEFAULT_POLICY = Path(__file__).resolve().parent.parent / "network" / "policy.yml"
 MGMT_RANGE = "10.255.0.0/16"  # router and switch loopbacks
 SUCCESS = ("ACCEPTED", "DELIVERED_TO_SUBNET", "EXITS_NETWORK")
 
 
-def ospf_pairs(inv: Inventory) -> set[frozenset[str]]:
-    """Device pairs that must form an OSPF adjacency: routed links with OSPF enabled
-    on both ends."""
-    pairs = set()
-    for site in inv.sites:
-        devs = {d.name: d for d in site.devices}
-        for link in site.links:
-            ends = []
-            for end in (link.a, link.b):
-                dev, port = end.split(":")
-                itf = next(i for i in devs[dev].interfaces if i.name == port)
-                ends.append((dev, itf))
-            if all(i.ospf_area is not None and i.mode == "routed" for _, i in ends):
-                pairs.add(frozenset(d for d, _ in ends))
-    return pairs
+def ospf_pairs(policy_path: Path = DEFAULT_POLICY) -> set[frozenset[str]]:
+    """Device pairs that must have an established OSPF session, from policy.yml."""
+    doc = yaml.safe_load(Path(policy_path).read_text()) or {}
+    return {frozenset(pair) for pair in doc.get("ospf_sessions", [])}
 
 
 def vlan_subnets(inv: Inventory, vlan_name: str, site: str | None = None):

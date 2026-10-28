@@ -1,0 +1,11 @@
+# Batfish service for local runs: `make up`. CI uses the same image as a service container.
+services:
+  batfish:
+    image: ${BATFISH_IMAGE:-batfish/allinone:latest}
+    ports:
+      - "9996:9996"   # coordinator (pybatfish talks here)
+      - "9997:9997"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost:9996/v2/networks || exit 1"]
+      interval: 5s
+      retries: 30

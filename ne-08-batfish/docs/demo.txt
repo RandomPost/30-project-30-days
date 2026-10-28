@@ -1,0 +1,79 @@
+### current network
+................                                                         [100%]
+16 passed in 3.69s
+
+### changes/bad-acl-name-typo.patch
+    - ip access-group GUEST-IN in
+    + ip access-group GUEST_IN in
+E           AssertionError: POLICY VIOLATION in branch-east: guest host 10.2.2.50 can reach management address 10.255.2.1
+E             flow 10.2.2.50 -> 10.255.2.1 entering branch-east-sw1[Vlan50]: ACCEPTED
+E               hop branch-east-sw1
+E                 RECEIVED: Vlan50
+E                 FORWARDED: Forwarded out interface: GigabitEthernet0/1 with resolved next-hop IP: 10.2.0.1, Routes: [ospf (Network: 10.255.2.1/32, Next Hop: interface GigabitEthernet0/1 ip 10.2.0.1)]
+E                 TRANSMITTED: GigabitEthernet0/1
+E               hop branch-east-r1
+E                 RECEIVED: Ethernet1
+E                 ACCEPTED: Loopback0
+E           assert not True
+E           AssertionError: POLICY VIOLATION in branch-east: guest host 10.2.2.50 can reach user host 10.2.1.50
+E             flow 10.2.2.50 -> 10.2.1.50 entering branch-east-sw1[Vlan50]: DELIVERED_TO_SUBNET
+E               hop branch-east-sw1
+E                 RECEIVED: Vlan50
+E                 FORWARDED: Forwarded out interface: Vlan10, Routes: [connected (Network: 10.2.1.0/24, Next Hop: interface Vlan10)]
+E                 TRANSMITTED: Vlan10
+E                 DELIVERED_TO_SUBNET: Output Interface: Vlan10, Resolved Next Hop IP: 10.2.1.50
+E           assert not True
+E       AssertionError: configs reference things that are not defined:
+E                              File_Name Struct_Type  Ref_Name                            Context
+E       assert False
+FAILED tests/test_policies.py::test_guest_cannot_reach_management - Assertion...
+FAILED tests/test_policies.py::test_guest_cannot_reach_users - AssertionError...
+FAILED tests/test_policies.py::test_no_undefined_references - AssertionError:...
+3 failed, 7 passed in 3.48s
+
+### changes/bad-guest-acl-reordered.patch
+    - permit ip 10.2.2.0 0.0.0.255 10.2.2.0 0.0.0.255
+    - deny ip 10.2.2.0 0.0.0.255 10.0.0.0 0.255.255.255
+    + deny ip 10.2.2.0 0.0.0.255 10.0.0.0 0.255.255.255
+E           AssertionError: POLICY VIOLATION in branch-east: guest host 10.2.2.50 can reach management address 10.255.2.1
+E             flow 10.2.2.50 -> 10.255.2.1 entering branch-east-sw1[Vlan50]: ACCEPTED
+E               hop branch-east-sw1
+E                 RECEIVED: Vlan50
+E                 PERMITTED: GUEST-IN (INGRESS_FILTER)
+E                 FORWARDED: Forwarded out interface: GigabitEthernet0/1 with resolved next-hop IP: 10.2.0.1, Routes: [ospf (Network: 10.255.2.1/32, Next Hop: interface GigabitEthernet0/1 ip 10.2.0.1)]
+E                 TRANSMITTED: GigabitEthernet0/1
+E               hop branch-east-r1
+E                 RECEIVED: Ethernet1
+E                 ACCEPTED: Loopback0
+E           assert not True
+E           AssertionError: POLICY VIOLATION in branch-east: guest host 10.2.2.50 can reach user host 10.2.1.50
+E             flow 10.2.2.50 -> 10.2.1.50 entering branch-east-sw1[Vlan50]: DELIVERED_TO_SUBNET
+E               hop branch-east-sw1
+E                 RECEIVED: Vlan50
+E                 PERMITTED: GUEST-IN (INGRESS_FILTER)
+E                 FORWARDED: Forwarded out interface: Vlan10, Routes: [connected (Network: 10.2.1.0/24, Next Hop: interface Vlan10)]
+E                 TRANSMITTED: Vlan10
+E                 DELIVERED_TO_SUBNET: Output Interface: Vlan10, Resolved Next Hop IP: 10.2.1.50
+E           assert not True
+FAILED tests/test_policies.py::test_guest_cannot_reach_management - Assertion...
+FAILED tests/test_policies.py::test_guest_cannot_reach_users - AssertionError...
+2 failed, 8 passed in 3.56s
+
+### changes/bad-ospf-removed-on-uplink.patch
+    -        ospf_area: 0
+E           AssertionError: hq: users 10.1.1.50 cannot reach 10.255.1.1
+E             flow 10.1.1.50 -> 10.255.1.1 entering hq-sw1[Vlan10]: NO_ROUTE
+E               hop hq-sw1
+E                 RECEIVED: Vlan10
+E                 NO_ROUTE: Discarded
+E           assert False
+E       AssertionError: OSPF sessions that should be up are not: hq-r1 <-> hq-sw1
+E       assert not {frozenset({'hq-r1', 'hq-sw1'})}
+FAILED tests/test_policies.py::test_users_reach_management_in_every_site - As...
+FAILED tests/test_policies.py::test_expected_ospf_sessions_are_established - ...
+2 failed, 8 passed in 2.99s
+
+### changes/good-log-guest-denies.patch
+    - deny ip 10.2.2.0 0.0.0.255 10.0.0.0 0.255.255.255
+    + deny ip 10.2.2.0 0.0.0.255 10.0.0.0 0.255.255.255 log
+10 passed in 3.37s

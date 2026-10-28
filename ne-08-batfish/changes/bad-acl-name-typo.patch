@@ -1,0 +1,10 @@
+diff -ruN a/ne-08-batfish/network/overlay/branch-east-sw1.cfg b/ne-08-batfish/network/overlay/branch-east-sw1.cfg
+--- a/ne-08-batfish/network/overlay/branch-east-sw1.cfg	2026-10-28 12:33:42.789148177 +0000
++++ b/ne-08-batfish/network/overlay/branch-east-sw1.cfg	2026-10-28 12:33:42.874637563 +0000
+@@ -7,5 +7,5 @@
+  permit ip any any
+ !
+ interface Vlan50
+- ip access-group GUEST-IN in
++ ip access-group GUEST_IN in
+ !

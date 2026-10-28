@@ -1,0 +1,7 @@
+# Intent that must hold after every change. Reviewed like code: it is deliberately a
+# separate file from the source of truth, so a change that breaks a link cannot also
+# quietly remove the expectation that the link is up.
+ospf_sessions:
+  - [hq-r1, hq-sw1]
+  - [branch-east-r1, branch-east-sw1]
+  - [branch-west-r1, branch-west-sw1]

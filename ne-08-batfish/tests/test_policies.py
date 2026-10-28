@@ -82,14 +82,16 @@ def test_no_duplicate_ip_addresses(bf):
 
 
 # --- routing protocol sessions ------------------------------------------------------
-def test_expected_ospf_sessions_are_established(bf, inventory):
+def test_expected_ospf_sessions_are_established(bf):
     sessions = bf.q.ospfSessionCompatibility().answer().frame()
     established = {
         frozenset({row["Interface"].hostname, row["Remote_Interface"].hostname})
         for _, row in sessions.iterrows()
         if row["Session_Status"] == "ESTABLISHED"
     }
-    missing = expect.ospf_pairs(inventory) - established
+    expected = expect.ospf_pairs()
+    assert expected, "policy.yml lists no OSPF sessions"
+    missing = expected - established
     assert not missing, "OSPF sessions that should be up are not: " + ", ".join(
         sorted(" <-> ".join(sorted(p)) for p in missing)
     )

@@ -1,0 +1,20 @@
+[project]
+name = "netcheck"
+version = "0.1.0"
+description = "Pre-change validation of netgen configs with Batfish"
+requires-python = ">=3.10"
+dependencies = ["pybatfish>=2023", "netgen", "pytest"]
+
+[project.optional-dependencies]
+dev = ["black"]
+
+[tool.setuptools]
+packages = ["netcheck"]
+
+[tool.black]
+line-length = 88
+target-version = ["py310"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = ["batfish: needs a running Batfish service (BATFISH_HOST, default localhost)"]

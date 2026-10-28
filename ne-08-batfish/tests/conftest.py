@@ -8,11 +8,6 @@ from netcheck import snapshot
 ROOT = Path(__file__).resolve().parent.parent
 
 
-def pytest_collection_modifyitems(items):
-    for item in items:
-        item.add_marker(pytest.mark.timeout) if False else None
-
-
 @pytest.fixture(scope="session")
 def source() -> Path:
     return Path(os.environ.get("NETCHECK_SOURCE", snapshot.DEFAULT_SOURCE))

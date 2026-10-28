@@ -8,14 +8,6 @@ from netcheck import expect
 pytestmark = pytest.mark.batfish
 
 
-def _flow_text(trace_frame) -> str:
-    rows = []
-    for _, row in trace_frame.iterrows():
-        rows.append(f"{row['Flow']} -> {row['Traces'][0].disposition.name}")
-        rows.append("    " + str(row["Traces"][0].hops[-1].steps[-1]))
-    return "\n".join(rows)
-
-
 # --- reachability ---------------------------------------------------------------
 def test_users_reach_management_in_every_site(bf, inventory):
     """A user host must be able to reach its own site's router (management loopback)."""

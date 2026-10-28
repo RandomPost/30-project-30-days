@@ -23,7 +23,7 @@ def test_build_writes_configs_dir_and_appends_overlay(tmp_path):
     )
     out = snapshot.build(SOURCE, overlay, tmp_path / "snap")
     text = (out / "configs" / "hq-sw1.cfg").read_text()
-    assert text.rstrip().endswith("permit ip any any")
+    assert text.rstrip().endswith("permit ip any any\nend")
     assert "hostname hq-sw1" in text
     assert (out / "configs" / "hq-sw2.cfg").exists()
 

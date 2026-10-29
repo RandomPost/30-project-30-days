@@ -1,0 +1,23 @@
+[project]
+name = "bgplab"
+version = "0.1.0"
+description = "Multi-AS BGP policy lab (containerlab + FRR) with path-choice tests"
+requires-python = ">=3.10"
+dependencies = ["pytest"]
+
+[project.optional-dependencies]
+dev = ["black"]
+
+[project.scripts]
+bgplab = "bgplab.cli:main"
+
+[tool.setuptools]
+packages = ["bgplab"]
+
+[tool.black]
+line-length = 88
+target-version = ["py310"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = ["lab: needs the containerlab BGP lab running (make up)"]

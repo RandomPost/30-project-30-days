@@ -1,0 +1,57 @@
+{
+  "prefix":"203.0.113.66/32",
+  "version":3,
+  "paths":[
+    {
+      "aspath":{
+        "string":"65100",
+        "segments":[
+          {
+            "type":"as-sequence",
+            "list":[
+              65100
+            ]
+          }
+        ],
+        "length":1
+      },
+      "origin":"IGP",
+      "metric":0,
+      "locPrf":500,
+      "valid":true,
+      "version":3,
+      "rpkiValidationState":"invalid",
+      "bestpath":{
+        "overall":true,
+        "selectionReason":"First path received"
+      },
+      "community":{
+        "string":"blackhole no-export",
+        "list":[
+          "blackhole",
+          "noExport"
+        ]
+      },
+      "lastUpdate":{
+        "epoch":1793276633,
+        "string":"Thu Oct 29 12:23:53 2026\n"
+      },
+      "nexthops":[
+        {
+          "ip":"192.0.2.1",
+          "hostname":"cust",
+          "afi":"ipv4",
+          "metric":0,
+          "accessible":true,
+          "used":true
+        }
+      ],
+      "peer":{
+        "peerId":"10.1.1.2",
+        "routerId":"10.255.100.1",
+        "hostname":"cust",
+        "type":"external"
+      }
+    }
+  ]
+}

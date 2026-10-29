@@ -1,0 +1,92 @@
+# Multi-AS BGP lab: customer (AS65100) dual-homed to two ISPs, an IXP with a route
+# server, a content network, a rogue AS, and a local RPKI (RTR) cache.
+# Policy design is chosen with DESIGN=a|b (default a): configs come from designs/<DESIGN>/.
+name: bgp
+
+mgmt:
+  network: bgp-mgmt
+  ipv4-subnet: 172.20.40.0/24
+
+topology:
+  defaults:
+    kind: linux
+    image: ${FRR_IMAGE:-docker.io/frrouting/frr:v8.4.1}
+  nodes:
+    cust:
+      mgmt-ipv4: 172.20.40.11
+      binds:
+        - configs/daemons:/etc/frr/daemons
+        - configs/vtysh.conf:/etc/frr/vtysh.conf
+        - designs/${DESIGN:-a}/cust.conf:/etc/frr/frr.conf
+    isp1:
+      stages: &after-rtr
+        create:
+          wait-for:
+            - node: rtr
+              stage: create
+      mgmt-ipv4: 172.20.40.12
+      exec:
+        - ip link add rtbh0 type veth peer name rtbh1
+        - ip addr add 192.0.2.254/24 dev rtbh0
+        - ip link set rtbh0 up
+        - ip link set rtbh1 up
+        - ip neigh replace 192.0.2.1 lladdr 02:00:00:00:00:66 dev rtbh0 nud permanent
+      binds:
+        - configs/daemons:/etc/frr/daemons
+        - configs/vtysh.conf:/etc/frr/vtysh.conf
+        - designs/${DESIGN:-a}/isp1.conf:/etc/frr/frr.conf
+    isp2:
+      stages: *after-rtr
+      mgmt-ipv4: 172.20.40.13
+      exec:
+        - ip link add rtbh0 type veth peer name rtbh1
+        - ip addr add 192.0.2.254/24 dev rtbh0
+        - ip link set rtbh0 up
+        - ip link set rtbh1 up
+        - ip neigh replace 192.0.2.1 lladdr 02:00:00:00:00:66 dev rtbh0 nud permanent
+      binds:
+        - configs/daemons:/etc/frr/daemons
+        - configs/vtysh.conf:/etc/frr/vtysh.conf
+        - designs/${DESIGN:-a}/isp2.conf:/etc/frr/frr.conf
+    rs:
+      stages: *after-rtr
+      mgmt-ipv4: 172.20.40.14
+      binds:
+        - configs/daemons:/etc/frr/daemons
+        - configs/vtysh.conf:/etc/frr/vtysh.conf
+        - designs/${DESIGN:-a}/rs.conf:/etc/frr/frr.conf
+    content:
+      mgmt-ipv4: 172.20.40.15
+      binds:
+        - configs/daemons:/etc/frr/daemons
+        - configs/vtysh.conf:/etc/frr/vtysh.conf
+        - designs/${DESIGN:-a}/content.conf:/etc/frr/frr.conf
+    rogue:
+      mgmt-ipv4: 172.20.40.16
+      binds:
+        - configs/daemons:/etc/frr/daemons
+        - configs/vtysh.conf:/etc/frr/vtysh.conf
+        - designs/${DESIGN:-a}/rogue.conf:/etc/frr/frr.conf
+    ixp:  # the exchange's L2 switch: a Linux bridge joining eth1..eth5
+      mgmt-ipv4: 172.20.40.20
+      cmd: sleep infinity
+      exec:
+        - ip link add br0 type bridge
+        - ip link set br0 up
+        - sh -c 'for i in 1 2 3 4 5; do ip link set eth$$i master br0; ip link set eth$$i up; done'
+    rtr:  # local RPKI cache (RTR protocol) serving rtr/roas.json
+      mgmt-ipv4: 172.20.40.100
+      image: ${PY_IMAGE:-docker.io/library/python:3.13-slim}
+      binds:
+        - rtr/rtrd.py:/rtrd.py:ro
+        - rtr/roas.json:/roas.json:ro
+      cmd: python -u /rtrd.py /roas.json 3323
+
+  links:
+    - endpoints: ["cust:eth1", "isp1:eth1"]
+    - endpoints: ["cust:eth2", "isp2:eth1"]
+    - endpoints: ["isp1:eth2", "ixp:eth1"]
+    - endpoints: ["isp2:eth2", "ixp:eth2"]
+    - endpoints: ["rs:eth1", "ixp:eth3"]
+    - endpoints: ["content:eth1", "ixp:eth4"]
+    - endpoints: ["rogue:eth1", "ixp:eth5"]

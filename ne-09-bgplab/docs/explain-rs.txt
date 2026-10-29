@@ -1,0 +1,9 @@
+rs -> 203.0.113.0/24: best via isp1 (10.99.0.1), AS path [65001 65100], RPKI valid
+  lost to isp2 [65002 65100 65100 65100]: AS path length 4 > 2
+  deciding step: shortest AS path
+isp2 -> 203.0.113.0/24: best via cust (10.1.2.2), AS path [65100 65100 65100], local-pref 300, RPKI valid
+  lost to rs [65001 65100]: local-pref 150 < 300
+  deciding step: highest local-preference
+cust -> 198.18.0.0/24: best via isp1 (10.1.1.1), AS path [65001 65300], local-pref 200
+  lost to isp2 [65002 65300]: local-pref 100 < 200
+  deciding step: highest local-preference

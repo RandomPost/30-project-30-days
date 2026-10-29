@@ -24,12 +24,12 @@ def test_outbound_local_pref_prefers_isp1(up):
 
 
 def test_inbound_prepend_steers_ixp_to_isp1(up):
-    """cust prepends twice towards ISP2, so the route server sees 4 vs 2 AS hops."""
+    """The customer asks for a prepend towards ISP2 (A: itself, B: community 65002:3), so the route server sees 4 vs 2 AS hops."""
     ps = lab.paths("rs", CUST)
     b = next(p for p in ps if p.best)
     assert b.peer == "isp1" and b.aspath == "65001 65100" and b.reason == "AS Path"
     other = next(p for p in ps if not p.best)
-    assert other.aspath == "65002 65100 65100 65100"
+    assert other.first_as == "65002" and other.aspath.endswith("65100") and other.length == 4
 
 
 def test_isps_prefer_customer_route_over_ixp(up):
@@ -94,7 +94,8 @@ def test_primary_link_failure_moves_outbound_to_isp2(link_down):
     expect[("rs", CUST)] = "isp2"  # the only remaining way in, prepends or not
     lab.wait_for(converged(expect))
     assert lab.best("cust", "198.18.0.0/24").local_pref == 100
-    assert lab.best("rs", CUST).aspath == "65002 65100 65100 65100"
+    rs = lab.best("rs", CUST)
+    assert rs.first_as == "65002" and rs.length == 4
     assert lab.best("isp1", CUST).peer != "cust"
 
 

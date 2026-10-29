@@ -1,0 +1,25 @@
+== 203.0.113.0/24
+  cust  via 0.0.0.0  [Local] lp=None
+  isp1  via cust     [65100] lp=300
+  isp2  via cust     [65100] lp=300
+  rs    via isp1     [65001 65100] lp=None
+== 203.0.113.66/32
+  cust  via 0.0.0.0  [Local] lp=None
+  isp1  via cust     [65100] lp=500
+  isp2  via cust     [65100] lp=500
+  rs    -
+== 198.18.0.0/24
+  cust  via isp1     [65001 65300] lp=200
+  isp1  via rs       [65300] lp=150
+  isp2  via rs       [65300] lp=150
+  rs    via content  [65300] lp=None
+== 198.51.100.0/24
+  cust  via isp1     [65001] lp=200
+  isp1  via 0.0.0.0  [Local] lp=None
+  isp2  via rs       [65001] lp=100
+  rs    via isp1     [65001] lp=None
+== 10.66.0.0/16
+  cust  via 0.0.0.0  [Local] lp=None
+  isp1  -
+  isp2  -
+  rs    -

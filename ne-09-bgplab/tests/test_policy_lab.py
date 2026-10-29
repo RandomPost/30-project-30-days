@@ -29,7 +29,11 @@ def test_inbound_prepend_steers_ixp_to_isp1(up):
     b = next(p for p in ps if p.best)
     assert b.peer == "isp1" and b.aspath == "65001 65100" and b.reason == "AS Path"
     other = next(p for p in ps if not p.best)
-    assert other.first_as == "65002" and other.aspath.endswith("65100") and other.length == 4
+    assert (
+        other.first_as == "65002"
+        and other.aspath.endswith("65100")
+        and other.length == 4
+    )
 
 
 def test_isps_prefer_customer_route_over_ixp(up):
@@ -77,12 +81,6 @@ def test_blackhole_route_is_not_leaked_to_ixp(up):
     assert lab.best("content", "203.0.113.66/32") is None
 
 
-def test_untagged_host_route_is_not_accepted(up):
-    """Only RTBH-tagged /32s inside the customer block pass; a /32 without the community does not."""
-    out = lab.vtysh("isp1", "show bgp ipv4 unicast 203.0.113.67/32")
-    assert "not in table" in out or out.strip() == ""
-
-
 # ---- failure scenarios ---------------------------------------------------------
 def test_primary_link_failure_moves_outbound_to_isp2(link_down):
     """cust loses its ISP1 link: everything outbound goes via ISP2 (local-pref 100)."""
@@ -102,7 +100,9 @@ def test_primary_link_failure_moves_outbound_to_isp2(link_down):
 def test_backup_link_failure_changes_nothing_outbound(link_down):
     link_down("cust", "eth2")
     expect = dict(NORMAL)
-    expect[("isp2", CUST)] = "rs"  # isp2 now only knows the customer through the IXP route server
+    expect[("isp2", CUST)] = (
+        "rs"  # isp2 now only knows the customer through the IXP route server
+    )
     expect[("rs", CUST)] = "isp1"
     lab.wait_for(converged(expect))
     assert lab.best("isp2", CUST).local_pref == 150

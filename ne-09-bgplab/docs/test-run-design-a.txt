@@ -1,0 +1,24 @@
+tests/test_model.py::test_customer_prefers_isp1_by_local_pref PASSED
+tests/test_model.py::test_route_server_picks_shorter_path_because_of_prepend PASSED
+tests/test_model.py::test_isp_localpref_beats_prepend_for_customer_route PASSED
+tests/test_model.py::test_rtbh_route_carries_blackhole_and_noexport PASSED
+tests/test_model.py::test_filtered_route_is_absent PASSED
+tests/test_model.py::test_explain_names_deciding_step PASSED
+tests/test_model.py::test_explain_no_route PASSED
+tests/test_policy_lab.py::test_outbound_local_pref_prefers_isp1 PASSED
+tests/test_policy_lab.py::test_inbound_prepend_steers_ixp_to_isp1 PASSED
+tests/test_policy_lab.py::test_isps_prefer_customer_route_over_ixp PASSED
+tests/test_policy_lab.py::test_prefix_filter_blocks_customer_leak PASSED
+tests/test_policy_lab.py::test_rpki_invalid_hijacks_are_dropped PASSED
+tests/test_policy_lab.py::test_rpki_not_found_is_accepted PASSED
+tests/test_policy_lab.py::test_blackhole_community_installs_discard_next_hop PASSED
+tests/test_policy_lab.py::test_blackhole_route_is_not_leaked_to_ixp PASSED
+tests/test_policy_lab.py::test_primary_link_failure_moves_outbound_to_isp2 PASSED
+tests/test_policy_lab.py::test_backup_link_failure_changes_nothing_outbound PASSED
+tests/test_policy_lab.py::test_isp1_loses_ixp_content_reachable_via_isp2 PASSED
+tests/test_policy_lab.py::test_double_failure_isolates_customer_from_content PASSED
+tests/test_rtr.py::test_reset_query_returns_cache_response_prefix_and_end_of_data PASSED
+tests/test_rtr.py::test_prefix_pdu_encodes_roa PASSED
+tests/test_rtr.py::test_serial_query_forces_cache_reset PASSED
+tests/test_rtr.py::test_garbage_is_ignored PASSED
+============================= 23 passed in 35.03s ==============================

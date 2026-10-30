@@ -21,3 +21,4 @@ One small project per day for 30 days, built with Claude Code.
 - [ne-07-lldpmap](ne-07-lldpmap/)
 - [ne-08-batfish](ne-08-batfish/)
 - [ne-09-bgplab](ne-09-bgplab/)
+- [ne-10-labmcp](ne-10-labmcp/)

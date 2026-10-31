@@ -1,0 +1,26 @@
+[project]
+name = "taskcli"
+version = "0.1.0"
+description = "Command-line task manager with SQLite"
+requires-python = ">=3.10"
+dependencies = ["typer>=0.12"]
+
+[project.optional-dependencies]
+dev = ["pytest", "black"]
+
+[project.scripts]
+tk = "taskcli.cli:main"
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["taskcli"]
+
+[tool.black]
+line-length = 88
+target-version = ["py310"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

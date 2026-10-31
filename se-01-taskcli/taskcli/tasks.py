@@ -170,3 +170,22 @@ def complete(conn: sqlite3.Connection, task_id: int) -> Task:
 def delete(conn: sqlite3.Connection, task_id: int) -> None:
     get(conn, task_id)
     conn.execute("DELETE FROM tasks WHERE id = ?", (task_id,))
+
+
+def search(
+    conn: sqlite3.Connection, text: str, include_done: bool = False
+) -> list[Task]:
+    """Case-insensitive substring match on the title or on a tag name."""
+    text = text.strip()
+    if not text:
+        raise ValueError("search text must not be empty")
+    pattern = "%" + re.sub(r"([\\%_])", r"\\\1", text) + "%"  # escape LIKE wildcards
+    sql = (
+        "SELECT t.* FROM tasks t WHERE (t.title LIKE ? ESCAPE '\\' "
+        "OR t.id IN (SELECT tt.task_id FROM task_tags tt JOIN tags g "
+        "ON g.id = tt.tag_id WHERE g.name LIKE ? ESCAPE '\\'))"
+    )
+    if not include_done:
+        sql += " AND t.done = 0"
+    sql += " ORDER BY t.done, t.priority, t.due_date IS NULL, t.due_date, t.id"
+    return _with_tags(conn, [_task(r) for r in conn.execute(sql, (pattern, pattern))])

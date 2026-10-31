@@ -114,3 +114,39 @@ def test_deleting_a_task_drops_its_tag_links(conn):
     t = tasks.add(conn, "a", tags=["work"])
     tasks.delete(conn, t.id)
     assert conn.execute("SELECT COUNT(*) FROM task_tags").fetchone()[0] == 0
+
+
+def test_search_matches_title_or_tag_case_insensitively(conn):
+    tasks.add(conn, "Write Report")
+    tasks.add(conn, "buy milk", tags=["errand"])
+    tasks.add(conn, "call bank", tags=["report-later"])
+    assert [t.title for t in tasks.search(conn, "report")] == [
+        "Write Report",
+        "call bank",
+    ]
+    assert [t.title for t in tasks.search(conn, "ERRAND")] == ["buy milk"]
+
+
+def test_search_skips_done_unless_asked(conn):
+    t = tasks.add(conn, "old report")
+    tasks.complete(conn, t.id)
+    assert tasks.search(conn, "report") == []
+    assert len(tasks.search(conn, "report", include_done=True)) == 1
+
+
+def test_search_wildcards_are_literal(conn):
+    tasks.add(conn, "100% done")
+    tasks.add(conn, "a_b")
+    tasks.add(conn, "axb")
+    assert [t.title for t in tasks.search(conn, "%")] == ["100% done"]
+    assert [t.title for t in tasks.search(conn, "a_b")] == ["a_b"]
+
+
+def test_search_injection_text_is_just_text(conn):
+    tasks.add(conn, "x")
+    assert tasks.search(conn, "' OR 1=1 --") == []
+
+
+def test_search_empty_rejected(conn):
+    with pytest.raises(ValueError):
+        tasks.search(conn, "  ")

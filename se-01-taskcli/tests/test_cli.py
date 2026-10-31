@@ -67,3 +67,13 @@ def test_bad_tag_is_an_error(run):
     r = run("add", "x", "-t", "bad tag")
     assert r.exit_code == 1 and "bad tag" in r.output
     assert run("ls", "-t", "a b").exit_code == 1
+
+
+def test_search_command(run):
+    run("add", "write report", "-t", "work")
+    run("add", "buy milk")
+    out = run("search", "report").output
+    assert "write report" in out and "milk" not in out
+    assert "write report" in run("search", "work").output
+    assert "no tasks" in run("search", "zzz").output
+    assert run("search", " ").exit_code == 1

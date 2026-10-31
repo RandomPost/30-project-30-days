@@ -86,6 +86,19 @@ def show(rows: list[tasks.Task]) -> None:
 
 
 @app.command()
+def search(
+    ctx: typer.Context,
+    text: str,
+    all_: bool = typer.Option(False, "--all", "-a", help="Include completed tasks."),
+) -> None:
+    """Find tasks whose title or tag contains TEXT."""
+    try:
+        show(tasks.search(open_db(ctx), text, include_done=all_))
+    except ValueError as e:
+        raise fail(str(e))
+
+
+@app.command()
 def tag(
     ctx: typer.Context, task_id: int, tags: list[str] = typer.Argument(...)
 ) -> None:

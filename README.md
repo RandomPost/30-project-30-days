@@ -22,3 +22,4 @@ One small project per day for 30 days, built with Claude Code.
 - [ne-08-batfish](ne-08-batfish/)
 - [ne-09-bgplab](ne-09-bgplab/)
 - [ne-10-labmcp](ne-10-labmcp/)
+- [se-01-taskcli](se-01-taskcli/)

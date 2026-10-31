@@ -39,7 +39,7 @@ def test_failed_migration_rolls_back(tmp_path, monkeypatch):
     c.isolation_level = None
     with pytest.raises(sqlite3.OperationalError):
         db.migrate(c)
-    assert db.schema_version(c) == 0
+    assert db.schema_version(c) == 3  # migrations 1-3 applied, 99 rolled back
     assert not c.execute("SELECT 1 FROM sqlite_master WHERE name='ok'").fetchone()
 
 

@@ -75,3 +75,42 @@ def test_done_tasks_sort_last_in_all(conn):
     tasks.add(conn, "b", priority="low")
     tasks.complete(conn, a.id)
     assert [t.title for t in tasks.list_tasks(conn, include_done=True)] == ["b", "a"]
+
+
+def test_tags_on_add_are_normalized_and_deduplicated(conn):
+    t = tasks.add(conn, "x", tags=["Work", "#work", "home-lab"])
+    assert t.tags == ("home-lab", "work")
+
+
+@pytest.mark.parametrize("bad", ["", "has space", "a;b", "x" * 31, "-lead", "ünï"])
+def test_bad_tag_rejected_before_anything_is_written(conn, bad):
+    with pytest.raises(ValueError, match="bad tag"):
+        tasks.add(conn, "x", tags=["ok", bad])
+    assert tasks.list_tasks(conn, include_done=True) == []
+
+
+def test_add_and_remove_tags(conn):
+    t = tasks.add(conn, "x")
+    assert tasks.add_tags(conn, t.id, ["a", "b"]).tags == ("a", "b")
+    assert tasks.remove_tags(conn, t.id, ["a", "zzz"]).tags == ("b",)
+
+
+def test_filter_by_tag(conn):
+    tasks.add(conn, "w1", tags=["work"])
+    tasks.add(conn, "h1", tags=["home"])
+    tasks.add(conn, "both", tags=["work", "home"])
+    assert [t.title for t in tasks.list_tasks(conn, tag="work")] == ["w1", "both"]
+    assert tasks.list_tasks(conn, tag="nothing") == []
+
+
+def test_tag_counts_only_count_open_tasks(conn):
+    a = tasks.add(conn, "a", tags=["work"])
+    tasks.add(conn, "b", tags=["work", "home"])
+    tasks.complete(conn, a.id)
+    assert tasks.tag_counts(conn) == [("home", 1), ("work", 1)]
+
+
+def test_deleting_a_task_drops_its_tag_links(conn):
+    t = tasks.add(conn, "a", tags=["work"])
+    tasks.delete(conn, t.id)
+    assert conn.execute("SELECT COUNT(*) FROM task_tags").fetchone()[0] == 0

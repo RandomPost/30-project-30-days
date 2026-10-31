@@ -48,11 +48,12 @@ def add(
     due: str = typer.Option(
         None, "--due", "-d", help="YYYY-MM-DD, today, tomorrow, +3d."
     ),
+    tag: list[str] = typer.Option([], "--tag", "-t", help="Tag (repeatable)."),
 ) -> None:
     """Add a task."""
     try:
         due_iso = dates.parse_due(due) if due else None
-        t = tasks.add(open_db(ctx), title, priority=priority, due=due_iso)
+        t = tasks.add(open_db(ctx), title, priority=priority, due=due_iso, tags=tag)
     except ValueError as e:
         raise fail(str(e))
     typer.echo(f"added #{t.id}: {t.title}")
@@ -62,16 +63,60 @@ def add(
 def list_(
     ctx: typer.Context,
     all_: bool = typer.Option(False, "--all", "-a", help="Include completed tasks."),
+    tag: str = typer.Option(None, "--tag", "-t", help="Only tasks with this tag."),
 ) -> None:
     """List open tasks."""
-    rows = tasks.list_tasks(open_db(ctx), include_done=all_)
+    try:
+        rows = tasks.list_tasks(open_db(ctx), include_done=all_, tag=tag)
+    except ValueError as e:
+        raise fail(str(e))
+    show(rows)
+
+
+def show(rows: list[tasks.Task]) -> None:
     if not rows:
         typer.echo("no tasks")
     for t in rows:
         due = t.due_date or "-"
+        tags = " ".join(f"#{g}" for g in t.tags)
         typer.echo(
-            f"{t.id:>4}  [{'x' if t.done else ' '}] {t.priority_name:<6} {due:<10} {t.title}"
+            f"{t.id:>4}  [{'x' if t.done else ' '}] {t.priority_name:<6} {due:<10} "
+            f"{t.title}" + (f"  {tags}" if tags else "")
         )
+
+
+@app.command()
+def tag(
+    ctx: typer.Context, task_id: int, tags: list[str] = typer.Argument(...)
+) -> None:
+    """Add tags to a task."""
+    try:
+        t = tasks.add_tags(open_db(ctx), task_id, tags)
+    except (ValueError, tasks.TaskNotFound) as e:
+        raise fail(str(e))
+    typer.echo(f"#{t.id} tags: {' '.join(t.tags) or '-'}")
+
+
+@app.command()
+def untag(
+    ctx: typer.Context, task_id: int, tags: list[str] = typer.Argument(...)
+) -> None:
+    """Remove tags from a task."""
+    try:
+        t = tasks.remove_tags(open_db(ctx), task_id, tags)
+    except (ValueError, tasks.TaskNotFound) as e:
+        raise fail(str(e))
+    typer.echo(f"#{t.id} tags: {' '.join(t.tags) or '-'}")
+
+
+@app.command()
+def tags(ctx: typer.Context) -> None:
+    """List tags with the number of open tasks."""
+    counts = tasks.tag_counts(open_db(ctx))
+    if not counts:
+        typer.echo("no tags")
+    for name, n in counts:
+        typer.echo(f"{n:>4}  #{name}")
 
 
 @app.command()

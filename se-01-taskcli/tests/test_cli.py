@@ -49,3 +49,21 @@ def test_bad_due_and_priority_are_clear_errors(run):
     assert r.exit_code == 1 and "bad due date" in r.output
     r = run("add", "x", "-p", "urgent")
     assert r.exit_code == 1 and "priority must be" in r.output
+
+
+def test_tag_commands(run):
+    run("add", "report", "-t", "work")
+    assert "#1 tags: work" in run("tag", "1", "urgent").output.replace(
+        "urgent work", "work"
+    )
+    assert "#urgent" in run("ls").output
+    assert "#1 tags: work" in run("untag", "1", "urgent").output
+    assert "work" in run("tags").output
+    assert "report" in run("ls", "--tag", "work").output
+    assert "no tasks" in run("ls", "--tag", "home").output
+
+
+def test_bad_tag_is_an_error(run):
+    r = run("add", "x", "-t", "bad tag")
+    assert r.exit_code == 1 and "bad tag" in r.output
+    assert run("ls", "-t", "a b").exit_code == 1

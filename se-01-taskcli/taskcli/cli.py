@@ -8,7 +8,7 @@ from pathlib import Path
 
 import typer
 
-from . import db, tasks
+from . import dates, db, tasks
 
 app = typer.Typer(help="A small task manager on SQLite.", no_args_is_help=True)
 
@@ -40,11 +40,19 @@ def fail(message: str) -> typer.Exit:
 
 @app.command()
 def add(
-    ctx: typer.Context, title: str = typer.Argument(..., help="What to do.")
+    ctx: typer.Context,
+    title: str = typer.Argument(..., help="What to do."),
+    priority: str = typer.Option(
+        "medium", "--priority", "-p", help="high, medium or low."
+    ),
+    due: str = typer.Option(
+        None, "--due", "-d", help="YYYY-MM-DD, today, tomorrow, +3d."
+    ),
 ) -> None:
     """Add a task."""
     try:
-        t = tasks.add(open_db(ctx), title)
+        due_iso = dates.parse_due(due) if due else None
+        t = tasks.add(open_db(ctx), title, priority=priority, due=due_iso)
     except ValueError as e:
         raise fail(str(e))
     typer.echo(f"added #{t.id}: {t.title}")
@@ -60,7 +68,10 @@ def list_(
     if not rows:
         typer.echo("no tasks")
     for t in rows:
-        typer.echo(f"{t.id:>4}  [{'x' if t.done else ' '}] {t.title}")
+        due = t.due_date or "-"
+        typer.echo(
+            f"{t.id:>4}  [{'x' if t.done else ' '}] {t.priority_name:<6} {due:<10} {t.title}"
+        )
 
 
 @app.command()

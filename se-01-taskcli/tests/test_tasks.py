@@ -46,3 +46,32 @@ def test_missing_id(conn, op):
 def test_title_with_sql_metacharacters_is_stored_verbatim(conn):
     t = tasks.add(conn, "x'); DROP TABLE tasks;--")
     assert tasks.get(conn, t.id).title == "x'); DROP TABLE tasks;--"
+
+
+def test_priority_and_due_are_stored(conn):
+    t = tasks.add(conn, "x", priority="high", due="2026-11-05")
+    assert (t.priority_name, t.due_date) == ("high", "2026-11-05")
+    assert tasks.add(conn, "y").priority_name == "medium"
+
+
+def test_bad_priority_rejected(conn):
+    with pytest.raises(ValueError, match="priority"):
+        tasks.add(conn, "x", priority="urgent")
+
+
+def test_list_order_priority_then_due_then_age(conn):
+    tasks.add(conn, "low-early", priority="low", due="2026-01-01")
+    tasks.add(conn, "med-undated")
+    tasks.add(conn, "med-late", due="2026-12-01")
+    tasks.add(conn, "med-soon", due="2026-11-01")
+    tasks.add(conn, "high-undated", priority="high")
+    assert [t.title for t in tasks.list_tasks(conn)] == [
+        "high-undated", "med-soon", "med-late", "med-undated", "low-early",
+    ]  # fmt: skip
+
+
+def test_done_tasks_sort_last_in_all(conn):
+    a = tasks.add(conn, "a", priority="high")
+    tasks.add(conn, "b", priority="low")
+    tasks.complete(conn, a.id)
+    assert [t.title for t in tasks.list_tasks(conn, include_done=True)] == ["b", "a"]
